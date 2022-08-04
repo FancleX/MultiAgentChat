@@ -1,13 +1,13 @@
-package com.neu.chatapp;
+package com.neu.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChatAppApplication {
+public class ServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChatAppApplication.class, args);
+        SpringApplication.run(ServerApplication.class, args);
     }
 
 }

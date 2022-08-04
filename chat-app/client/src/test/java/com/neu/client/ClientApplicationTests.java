@@ -1,10 +1,10 @@
-package com.neu.chatapp;
+package com.neu.client;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChatAppApplicationTests {
+class ClientApplicationTests {
 
     @Test
     void contextLoads() {
