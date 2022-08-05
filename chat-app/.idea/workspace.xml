@@ -5,21 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/entity/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/user/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/service/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/encryption/Encryption.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/NodeManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/controller/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/LiveNodeList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/p2pConnectionGroup/P2PConnectionGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/p2pConnectionGroup/nettyClient/NettyClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/p2pConnectionGroup/nettyServer/NettyServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/neu/chatapp/ChatAppApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/neu/chatapp/ChatAppApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/util/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/Main.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,16 +70,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;adopt-11&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;cc4d923b406355b122bfd4cc5595cacd&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "adopt-11",
+    "last_opened_file_path": "C:/Users/fancl/Desktop/JavaProject/MultiAgentChat/chat-app",
+    "spring.configuration.checksum": "e15822703ad1ccc425345c8420c3a1bc"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "redshift",
+      "postgresql"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\fancl\Desktop\JavaProject\MultiAgentChat\chat-app" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.neu" />
       <recent name="com.neu.encryption" />
@@ -117,7 +136,8 @@
       <updated>1659573974947</updated>
       <workItem from="1659573977403" duration="163000" />
       <workItem from="1659631379120" duration="4803000" />
-      <workItem from="1659645591413" duration="1455000" />
+      <workItem from="1659645591413" duration="7982000" />
+      <workItem from="1659718275175" duration="18202000" />
     </task>
     <servers />
   </component>

@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
 
 
 @NoArgsConstructor
@@ -32,20 +29,16 @@ public class User {
     // md5 salt for password
     private String salt;
 
-    @Column(name = "created_time")
-    private Date joinTime;
+    private String ip;
 
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "profileImg")
-    private byte[] profileImg;
+    private int port;
 
-    private String bio;
 
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "bgImg")
-    private byte[] backgroundImg;
-
+    public User(String nickname, String email, String password, String salt) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.salt = salt;
+    }
 }
 
