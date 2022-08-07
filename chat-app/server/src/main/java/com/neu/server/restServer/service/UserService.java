@@ -50,7 +50,7 @@ public class UserService {
         // parse map
         String email = (String) data.get("email");
         String password = (String) data.get("password");
-        String ip = (String) data.get("ip");
+        String hostname = (String) data.get("hostname");
         int port = (int) data.get("port");
 
         Map<String, Object> response = new HashMap<>();
@@ -73,11 +73,12 @@ public class UserService {
 
         // record the ip and port of this time login
         // db
-        userRepository.updateIpAndPort(id, ip, port);
+        userRepository.updateHostnameAndPort(id, hostname, port);
 
-        // return the leader ip and port of the p to p network
-
-        response.put("ip", "");
+        // return the leader hostname and port of the p to p network
+        // and the id the user
+        response.put("id", id);
+        response.put("hostname", "");
         response.put("port", 1);
 
         return ResponseEntity.ok(response);

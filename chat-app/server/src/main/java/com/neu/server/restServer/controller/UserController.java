@@ -33,7 +33,7 @@ public class UserController {
     /**
      * Login.
      *
-     * @param data take email, password, ip address, port
+     * @param data take email, password, hostname, port
      * @return
      */
     @PostMapping("/login")

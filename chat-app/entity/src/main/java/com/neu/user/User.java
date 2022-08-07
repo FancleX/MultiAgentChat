@@ -29,7 +29,7 @@ public class User {
     // md5 salt for password
     private String salt;
 
-    private String ip;
+    private String hostname;
 
     private int port;
 

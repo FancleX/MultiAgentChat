@@ -1,6 +1,5 @@
 package com.neu.p2pConnectionGroup.nettyServer;
 
-import com.neu.liveNodeList.LiveNodeList;
 import com.neu.protocol.TransmitProtocol;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -10,8 +9,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -23,11 +20,11 @@ public class NettyServer {
 
     private final int port;
 
-    private final LiveNodeList nodeList;
+    private final ChannelInboundHandler dispatcher;
 
-    public NettyServer(int port, LiveNodeList nodeList) {
+    public NettyServer(int port, ChannelInboundHandler dispatcher) {
         this.port = port;
-        this.nodeList = nodeList;
+        this.dispatcher = dispatcher;
     }
 
 
@@ -50,13 +47,13 @@ public class NettyServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            ChannelPipeline pipeline = socketChannel.pipeline();
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ChannelPipeline pipeline = ch.pipeline();
                             // add byte encoder and decoder
                             pipeline.addLast(new ObjectDecoder(1024*1024, ClassResolvers.weakCachingConcurrentResolver(TransmitProtocol.class.getClassLoader())))
-                                    .addLast(new ObjectEncoder());
-                            // add custom handler
-//                                    .addLast(new )
+                                    .addLast(new ObjectEncoder())
+                                    // add task dispatcher
+                                    .addLast(dispatcher);
 
                         }
                     });
