@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public ResponseEntity<String> signup(Map<String, String> data) {
         // parse the map
         // get email
@@ -46,6 +48,7 @@ public class UserService {
         return ResponseEntity.ok("Welcome to join us");
     }
 
+    @Transactional
     public ResponseEntity<Map<String, Object>> login(Map<String, Object> data) {
         // parse map
         String email = (String) data.get("email");
@@ -75,7 +78,7 @@ public class UserService {
         // db
         userRepository.updateHostnameAndPort(id, hostname, port);
 
-        // return the leader hostname and port of the p to p network
+        // TODO: return the leader hostname and port of the p to p network
         // and the id the user
         response.put("id", id);
         response.put("hostname", "");

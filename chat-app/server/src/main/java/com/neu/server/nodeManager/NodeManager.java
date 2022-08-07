@@ -4,7 +4,7 @@ package com.neu.server.nodeManager;
 import com.neu.liveNodeList.LiveNodeList;
 import com.neu.liveNodeList.ServerLiveNodeListImpl;
 import com.neu.p2pConnectionGroup.P2PConnectionGroup;
-import com.neu.server.nodeManager.node.Node;
+import com.neu.node.Node;
 import io.netty.channel.ChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 

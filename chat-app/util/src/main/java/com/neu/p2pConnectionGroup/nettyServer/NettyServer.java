@@ -25,6 +25,8 @@ public class NettyServer {
     public NettyServer(int port, ChannelInboundHandler dispatcher) {
         this.port = port;
         this.dispatcher = dispatcher;
+        log.info("Netty server starting at port: [{}]", port);
+        new Thread(this::run).start();
     }
 
 
@@ -59,7 +61,6 @@ public class NettyServer {
                     });
             // synchronously bind port to the server until succeed or failed
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-            log.info("Netty server started at port: [{}]", port);
             // listening channel shutdown
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {

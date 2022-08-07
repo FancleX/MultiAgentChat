@@ -27,7 +27,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
      * @param port port
      */
     @Modifying
-    @Query(value = "UPDATE user_info SET hostname = :userHostname, port =: userPort WHERE id = :userId", nativeQuery = true)
+    @Query(value = "UPDATE user_info SET hostname = :userHostname, port = :userPort WHERE id = :userId", nativeQuery = true)
     void updateHostnameAndPort(@Param("userId") Long id, @Param("userHostname") String hostname, @Param("userPort") int port);
 
 

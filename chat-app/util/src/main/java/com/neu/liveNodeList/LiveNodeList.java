@@ -1,9 +1,11 @@
 package com.neu.liveNodeList;
 
+import com.neu.node.Node;
 import io.netty.channel.Channel;
 
 /**
- * Store current live nodes metadata.
+ * Store current live nodes metadata with the ascending order of the user id.
+ * Client side list will store io channel, server side list will not.
  */
 public interface LiveNodeList <E extends Comparable<E>> {
 
@@ -16,7 +18,7 @@ public interface LiveNodeList <E extends Comparable<E>> {
     boolean add(E node);
 
     /**
-     * Remove the node by its user id.
+     * Remove the node by its user id. If the node associates with a channel, this will close the channel as well.
      *
      * @param id the user id
      * @return true if the channel has been removed, false if the channel doesn't exist
@@ -26,10 +28,10 @@ public interface LiveNodeList <E extends Comparable<E>> {
     /**
      * Query the node channel by provided channel.
      *
-     * @param channel the io channel to be queried
-     * @return true if the channel is present, otherwise false
+     * @param id the user id
+     * @return true if the user with the id is present, otherwise false
      */
-    boolean isContain(Channel channel);
+    boolean isContain(Long id);
 
     /**
      * Get the node channel by the id of the user of the node

@@ -24,15 +24,12 @@ public class NettyClient {
 
 
     public NettyClient(ChannelInboundHandler dispatcher) {
-
-        log.info("Netty client started ");
+        log.info("Netty client starting ");
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(group)
                 // nio connection
                 .channel(NioSocketChannel.class)
-                // the maximum queue length for incoming connection
-                .option(ChannelOption.SO_BACKLOG, 1024)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new ChannelInitializer<SocketChannel>() {
@@ -61,6 +58,7 @@ public class NettyClient {
      * @throws SocketTimeoutException when failed to connect within limited time
      */
     public Channel connectTo(String hostname, int port) throws SocketTimeoutException {
+        log.info("Connect to hostname: " + hostname + ", port: " + port);
         ChannelFuture channelFuture = bootstrap.connect(hostname, port);
         try {
             // 500 ms timeout
