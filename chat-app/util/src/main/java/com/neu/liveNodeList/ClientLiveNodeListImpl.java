@@ -39,8 +39,10 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
         }
         Channel channelToBeRemoved = t.getChannel();
         nodes.remove(t);
-        // close the channel with all handler resources associated with the channel
-        channelToBeRemoved.close();
+        if (channelToBeRemoved != null) {
+            // close the channel with all handler resources associated with the channel
+            channelToBeRemoved.close();
+        }
         return true;
     }
 
@@ -80,6 +82,15 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     @Override
     public int size() {
         return nodes.size();
+    }
+
+    @Override
+    public T getNext() {
+        if (nodes.size() == 0) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(node -> !node.isLeader()).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     @Override

@@ -62,4 +62,11 @@ public interface LiveNodeList <E extends Node> {
      * @return the size of the list
      */
     int size();
+
+    /**
+     * Get the first none leader node in the list.
+     *
+     * @return a node. If the list only contains the leader node, this method will return null.
+     */
+    E getNext();
 }

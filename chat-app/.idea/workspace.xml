@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/test/java/com/neu/liveNodeList/LiveNodeListTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/Type.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/node/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/node/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/ClientLiveNodeListImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/ClientLiveNodeListImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/LiveNodeList.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/LiveNodeList.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +22,7 @@
         <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -57,30 +58,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;adopt-11&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/fancl/Desktop/JavaProject/MultiAgentChat/chat-app&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;e15822703ad1ccc425345c8420c3a1bc&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "jdk.selected.JAVA_MODULE": "adopt-11",
+    "last_opened_file_path": "C:/Users/fancl/Desktop/JavaProject/MultiAgentChat/chat-app",
+    "spring.configuration.checksum": "e15822703ad1ccc425345c8420c3a1bc"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;redshift&quot;,
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "redshift",
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\fancl\Desktop\JavaProject\MultiAgentChat\chat-app" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.neu.liveNodeList" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.neu.node" />
@@ -95,7 +104,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ClientApplication">
+  <component name="RunManager" selected="JUnit.LiveNodeListTest">
     <configuration name="ClientDriver" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.neu.client.driver.ClientDriver" />
       <module name="client" />
@@ -110,15 +119,81 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RestClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.neu.client.restClient.RestClient" />
-      <module name="client" />
+    <configuration name="LiveNodeListTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="util" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.neu.client.restClient.*" />
+          <option name="PATTERN" value="com.neu.liveNodeList.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="com.neu.liveNodeList" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.liveNodeList.LiveNodeListTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LiveNodeListTest.get" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="util" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.neu.liveNodeList.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.neu.liveNodeList" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.liveNodeList.LiveNodeListTest" />
+      <option name="METHOD_NAME" value="get" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LiveNodeListTest.getAllNodes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="util" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.neu.liveNodeList.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.neu.liveNodeList" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.liveNodeList.LiveNodeListTest" />
+      <option name="METHOD_NAME" value="getAllNodes" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LiveNodeListTest.getLeaderNode" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="util" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.neu.liveNodeList.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.neu.liveNodeList" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.liveNodeList.LiveNodeListTest" />
+      <option name="METHOD_NAME" value="getLeaderNode" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LiveNodeListTest.getNext" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="util" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.neu.liveNodeList.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.neu.liveNodeList" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.liveNodeList.LiveNodeListTest" />
+      <option name="METHOD_NAME" value="getNext" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -148,7 +223,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.RestClient" />
+        <item itemvalue="JUnit.LiveNodeListTest" />
+        <item itemvalue="JUnit.LiveNodeListTest.getNext" />
+        <item itemvalue="JUnit.LiveNodeListTest.getAllNodes" />
+        <item itemvalue="JUnit.LiveNodeListTest.getLeaderNode" />
+        <item itemvalue="JUnit.LiveNodeListTest.get" />
       </list>
     </recent_temporary>
   </component>
@@ -166,7 +245,7 @@
       <workItem from="1659718275175" duration="19414000" />
       <workItem from="1659804636070" duration="20665000" />
       <workItem from="1659891544483" duration="19253000" />
-      <workItem from="1659977516110" duration="11820000" />
+      <workItem from="1659977516110" duration="15931000" />
     </task>
     <servers />
   </component>

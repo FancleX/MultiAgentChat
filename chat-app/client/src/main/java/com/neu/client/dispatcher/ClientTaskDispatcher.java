@@ -29,7 +29,7 @@ public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     protected void channelRead0(ChannelHandlerContext ctx, TransmitProtocol msg) throws Exception {
         System.out.println("msg");
         switch (msg.getType()) {
-            // TODO: dispatch task by types
+            // TODO: dispatch task by types and call your apis
         }
     }
 
