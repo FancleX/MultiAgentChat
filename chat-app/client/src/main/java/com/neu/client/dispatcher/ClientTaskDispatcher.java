@@ -19,7 +19,11 @@ public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     // to determine if my node is the leader
     private boolean isLeader;
 
-    private LiveNodeList<NodeChannel> liveNodeList = new ClientLiveNodeListImpl<>();
+    private LiveNodeList<NodeChannel> liveNodeList;
+
+    public ClientTaskDispatcher(LiveNodeList<NodeChannel> liveNodeList) {
+        this.liveNodeList = new ClientLiveNodeListImpl<>();
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TransmitProtocol msg) throws Exception {

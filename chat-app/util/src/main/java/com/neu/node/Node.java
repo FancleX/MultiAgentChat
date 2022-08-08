@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Node for storing metadata only. Distinct by the unique user id.
+ * Extra information storage should modify the field or extend the class.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

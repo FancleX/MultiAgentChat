@@ -62,7 +62,4 @@ public interface LiveNodeList <E extends Node> {
      * @return the size of the list
      */
     int size();
-
-
-
 }

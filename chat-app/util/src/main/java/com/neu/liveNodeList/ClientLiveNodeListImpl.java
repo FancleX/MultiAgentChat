@@ -7,6 +7,11 @@ import io.netty.channel.Channel;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * List for client use.
+ *
+ * @param <T> metadata node + io channel
+ */
 public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeList<T>, Iterable<T> {
 
     private final TreeSet<T> nodes;

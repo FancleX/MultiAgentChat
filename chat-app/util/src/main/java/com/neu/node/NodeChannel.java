@@ -3,10 +3,11 @@ package com.neu.node;
 import io.netty.channel.Channel;
 import lombok.Data;
 
-import java.util.Objects;
 
 /**
- * A wrapper class of the io channel and stores metadata of the user
+ * A wrapper class of the io channel and stores metadata of the user.
+ * For client use.
+ * Extra information storage should modify the field or extend the class.
  */
 @Data
 public class NodeChannel extends Node {

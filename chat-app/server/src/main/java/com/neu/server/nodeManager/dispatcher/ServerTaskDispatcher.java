@@ -15,7 +15,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @ChannelHandler.Sharable
 public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitProtocol> {
 
-    // store connections with metadata of the connections
+    // store metadata of the connections
     private final LiveNodeList<Node> nodeList = new ServerLiveNodeListImpl<>();
 
     /**

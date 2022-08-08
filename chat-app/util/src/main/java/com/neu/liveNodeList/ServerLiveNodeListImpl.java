@@ -6,6 +6,11 @@ import com.neu.node.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * List for the central server use.
+ *
+ * @param <T> metadata node
+ */
 public class ServerLiveNodeListImpl<T extends Node> implements LiveNodeList<T>, Iterable<T> {
 
     private final TreeSet<T> nodes;
