@@ -17,6 +17,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Node implements Comparable<Node>, Serializable {
 
+    private static final long serialVersionUID = 1234567L;
+
     // the unique id of the user comes from database
     @NotNull
     private Long id;

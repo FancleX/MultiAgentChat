@@ -13,6 +13,8 @@ import java.io.Serializable;
 @Data
 public class TransmitProtocol implements Serializable {
 
-    private Type type;
+    private static final long serialVersionUID = 1234567L;
+
+    private GeneralType type;
 
 }
