@@ -1,13 +1,14 @@
 package com.neu.liveNodeList;
 
 import com.neu.node.Node;
-import io.netty.channel.Channel;
+
+import java.util.Iterator;
 
 /**
  * Store current live nodes metadata with the ascending order of the user id.
  * Client side list will store io channel, server side list will not.
  */
-public interface LiveNodeList <E extends Comparable<E>> {
+public interface LiveNodeList <E extends Node> {
 
     /**
      * Add a new node to the list.
@@ -34,16 +35,32 @@ public interface LiveNodeList <E extends Comparable<E>> {
     boolean isContain(Long id);
 
     /**
-     * Get the node channel by the id of the user of the node
+     * Get the node by the id of the user of the node
      *
-     * @return
+     * @param id the user id
+     * @return the node with the given id, or null if none node belongs to the id
      */
     E get(Long id);
 
+    /**
+     * Get the leader node that in the list
+     *
+     * @return the leader node if the leader node is present, otherwise null
+     */
     E getLeaderNode();
 
-    Iterable<E> getAllNodes();
+    /**
+     * Get all nodes in the order of their id.
+     *
+     * @return an iterator of the ordered nodes
+     */
+    Iterator<E> getAllNodes();
 
+    /**
+     * Get the size of the list.
+     *
+     * @return the size of the list
+     */
     int size();
 
 

@@ -1,11 +1,12 @@
 package com.neu.liveNodeList;
 
 
-import io.netty.channel.Channel;
+import com.neu.node.Node;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class ServerLiveNodeListImpl<T extends Comparable<T>> implements LiveNodeList<T>, Iterable<T> {
+public class ServerLiveNodeListImpl<T extends Node> implements LiveNodeList<T>, Iterable<T> {
 
     private final TreeSet<T> nodes;
 
@@ -16,42 +17,78 @@ public class ServerLiveNodeListImpl<T extends Comparable<T>> implements LiveNode
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return nodes.iterator();
     }
 
     @Override
     public boolean add(T node) {
-        return false;
+        if (node == null) {
+            return false;
+        }
+        return nodes.add(node);
     }
 
     @Override
     public boolean remove(Long id) {
-        return false;
+        if (id == null) {
+            return false;
+        }
+        // query the node
+        T t = get(id);
+        if (t == null) {
+            return false;
+        }
+        nodes.remove(t);
+        return true;
     }
 
     @Override
     public boolean isContain(Long id) {
-        return false;
+        if (id == null) {
+            return false;
+        }
+        T t = get(id);
+        return t != null;
     }
-
 
     @Override
     public T get(Long id) {
-        return null;
+        if (id == null) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(node -> node.getId().equals(id)).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     @Override
     public T getLeaderNode() {
-        return null;
+        if (nodes.isEmpty()) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(Node::isLeader).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     @Override
-    public Iterable<T> getAllNodes() {
-        return null;
+    public Iterator<T> getAllNodes() {
+        return iterator();
     }
 
     @Override
     public int size() {
-        return 0;
+        return nodes.size();
+    }
+
+    /**
+     * Get the first none leader node in the list.
+     *
+     * @return a node. If the list only contains the leader node, this method will return null.
+     */
+    public T getNext() {
+        if (nodes.size() == 0) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(node -> !node.isLeader()).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 }

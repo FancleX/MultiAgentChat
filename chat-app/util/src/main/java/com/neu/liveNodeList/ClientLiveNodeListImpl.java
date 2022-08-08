@@ -1,58 +1,84 @@
 package com.neu.liveNodeList;
 
 import com.neu.node.Node;
+import com.neu.node.NodeChannel;
 import io.netty.channel.Channel;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class ClientLiveNodeListImpl<T extends Comparable<T>> implements LiveNodeList<T>, Iterable<T> {
+public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeList<T>, Iterable<T> {
 
-    private final Map<T, Channel> nodes;
+    private final TreeSet<T> nodes;
 
     public ClientLiveNodeListImpl() {
-        this.nodes = new TreeMap<>(T::compareTo);
+        this.nodes = new TreeSet<>(T::compareTo);
     }
 
     @Override
     public boolean add(T node) {
-        return false;
+        if (node == null) {
+            return false;
+        }
+        return nodes.add(node);
     }
 
     @Override
     public boolean remove(Long id) {
-        return false;
+        if (id == null) {
+            return false;
+        }
+        T t = get(id);
+        if (t == null) {
+            return false;
+        }
+        Channel channelToBeRemoved = t.getChannel();
+        nodes.remove(t);
+        // close the channel with all handler resources associated with the channel
+        channelToBeRemoved.close();
+        return true;
     }
 
     @Override
     public boolean isContain(Long id) {
-        return false;
+        if (id == null) {
+            return false;
+        }
+        T t = get(id);
+        return t != null;
     }
 
 
     @Override
     public T get(Long id) {
-        return null;
+        if (id == null) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(node -> node.getId().equals(id)).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     @Override
     public T getLeaderNode() {
-        return null;
+        if (nodes.isEmpty()) {
+            return null;
+        }
+        List<T> collect = nodes.stream().filter(Node::isLeader).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     @Override
-    public Iterable<T> getAllNodes() {
-        return null;
+    public Iterator<T> getAllNodes() {
+        return iterator();
     }
 
     @Override
     public int size() {
-        return 0;
+        return nodes.size();
     }
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return nodes.iterator();
     }
 }
