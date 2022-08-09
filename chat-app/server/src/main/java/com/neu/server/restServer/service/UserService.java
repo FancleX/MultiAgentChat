@@ -1,7 +1,11 @@
 package com.neu.server.restServer.service;
 
 import com.neu.encryption.Encryption;
+import com.neu.liveNodeList.LiveNodeList;
+import com.neu.node.Node;
+import com.neu.server.nodeManager.NodeManager;
 import com.neu.server.restServer.repository.UserRepository;
+import com.neu.server.tokenGenerator.TokenGenerator;
 import com.neu.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -78,12 +82,23 @@ public class UserService {
         // db
         userRepository.updateHostnameAndPort(id, hostname, port);
 
-        // TODO: return the leader hostname and port of the p to p network
+        // return the leader hostname and port of the p to p network
         // and the id the user
+        LiveNodeList<Node> nodeList = NodeManager.getNodeList();
         response.put("id", id);
-        response.put("hostname", "");
-        response.put("port", 1);
-
+        // if empty list, then the node will be assigned as leader
+        if (nodeList.size() == 0) {
+            Node leaderNode = new Node(id, user.getNickname(), true, hostname, port);
+            nodeList.add(leaderNode);
+            // assign token to the node
+            String token = TokenGenerator.generateToken(leaderNode.getId(), leaderNode.getHostname(), leaderNode.getPort());
+            response.put("token", token);
+        } else {
+            // return the leader hostname and port
+            Node leaderNode = nodeList.getLeaderNode();
+            response.put("hostname", leaderNode.getHostname());
+            response.put("port", leaderNode.getPort());
+        }
         return ResponseEntity.ok(response);
     }
 

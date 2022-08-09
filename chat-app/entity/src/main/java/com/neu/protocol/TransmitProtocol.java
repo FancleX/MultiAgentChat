@@ -1,7 +1,8 @@
 package com.neu.protocol;
 
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -11,10 +12,15 @@ import java.io.Serializable;
  * The sub protocols should extend the protocol.
  */
 @Data
+@NoArgsConstructor
+@ToString
 public class TransmitProtocol implements Serializable {
 
     private static final long serialVersionUID = 1234567L;
 
-    private GeneralType type;
+    protected GeneralType type;
 
+    public TransmitProtocol(GeneralType type) {
+        this.type = type;
+    }
 }

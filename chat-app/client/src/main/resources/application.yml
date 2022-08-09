@@ -2,7 +2,7 @@
 request:
   uri: http://localhost:9000/user
 # server socket hostname and port
-#netty:
-#  server:
-#    hostname:
-#    port:
+netty:
+  server:
+    hostname: "localhost"
+    port: 9001

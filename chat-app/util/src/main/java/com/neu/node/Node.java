@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,28 +13,30 @@ import java.util.Objects;
  * Node for storing metadata only. Distinct by the unique user id.
  * Extra information storage should modify the field or extend the class.
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Node implements Comparable<Node>, Serializable {
 
     private static final long serialVersionUID = 1234567L;
 
     // the unique id of the user comes from database
     @NotNull
-    private Long id;
+    protected Long id;
 
     // the nickname of the user
-    private String nickname;
+    protected String nickname;
 
     // is the leader node
-    private boolean isLeader;
+    protected boolean isLeader;
 
     // the node hostname
-    private String hostname;
+    protected String hostname;
 
     // the node port
-    private int port;
+    protected int port;
 
     public Node getNode() {
         return this;

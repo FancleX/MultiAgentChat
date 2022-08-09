@@ -1,5 +1,6 @@
 package com.neu.server;
 
+import com.neu.server.nodeManager.NodeManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,6 @@ public class ServerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        new NodeManager(port, new TaskDispatcher());
+        NodeManager.start(port);
     }
 }

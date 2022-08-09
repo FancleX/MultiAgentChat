@@ -1,35 +1,49 @@
 package com.neu.client.dispatcher;
 
 
+import com.neu.client.driver.ClientDriver;
+import com.neu.client.handlers.LeaderElection.LeaderElectionHandler;
 import com.neu.liveNodeList.ClientLiveNodeListImpl;
 import com.neu.liveNodeList.LiveNodeList;
 import com.neu.node.NodeChannel;
+import com.neu.p2pConnectionGroup.P2PConnectionGroup;
 import com.neu.protocol.TransmitProtocol;
+import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
-import java.util.Iterator;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @ChannelHandler.Sharable
+@Getter
+@Setter
 public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitProtocol> {
 
-    private NodeChannel myNode;
 
-    // to determine if my node is the leader
-    private boolean isLeader;
+    private P2PConnectionGroup group = ClientDriver.getGroup();
 
-    private LiveNodeList<NodeChannel> liveNodeList;
+    private final LiveNodeList<NodeChannel> liveNodeList;
+
+    private final LeaderElectionHandler leaderElectionHandler;
+
 
     public ClientTaskDispatcher(LiveNodeList<NodeChannel> liveNodeList) {
         this.liveNodeList = new ClientLiveNodeListImpl<>();
+        this.leaderElectionHandler = new LeaderElectionHandler(liveNodeList, group);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TransmitProtocol msg) throws Exception {
-        System.out.println("msg");
+        System.out.println(msg.getClass().getName());
         switch (msg.getType()) {
-            // TODO: dispatch task by types and call your apis
+            // dispatch task by types
+            case LEADER_ELECTION:
+                leaderElectionHandler.handler((LeaderElectionProtocol) msg, ctx);
+                break;
+
         }
     }
 

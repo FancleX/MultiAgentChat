@@ -2,8 +2,14 @@ package com.neu.server.nodeManager.dispatcher;
 
 import com.neu.liveNodeList.LiveNodeList;
 import com.neu.liveNodeList.ServerLiveNodeListImpl;
+import com.neu.node.NodeChannel;
+import com.neu.protocol.GeneralType;
 import com.neu.protocol.TransmitProtocol;
 import com.neu.node.Node;
+import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
+import com.neu.protocol.leaderElectionProtocol.LeaderElectionType;
+import com.neu.server.nodeManager.handler.LeaderElectionHandler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,7 +22,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitProtocol> {
 
     // store metadata of the connections
-    private final LiveNodeList<Node> nodeList = new ServerLiveNodeListImpl<>();
+    private final LiveNodeList<Node> nodeList;
+
+    private static NodeChannel leaderNode;
+
+    private final LeaderElectionHandler leaderElectionHandler;
+
+    public ServerTaskDispatcher(LiveNodeList<Node> nodeList) {
+        this.nodeList = nodeList;
+        this.leaderElectionHandler = new LeaderElectionHandler(nodeList);
+    }
 
     /**
      * Message read in with the io channel of the sender.
@@ -30,7 +45,9 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     protected void channelRead0(ChannelHandlerContext ctx, TransmitProtocol msg) throws Exception {
         System.out.println("msg");
         switch (msg.getType()) {
-            // TODO: dispatch task by types
+            case LEADER_ELECTION:
+                leaderElectionHandler.handle((LeaderElectionProtocol) msg, ctx);
+                break;
         }
     }
 
@@ -54,7 +71,14 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
+        // leader node may crash
+        if (ctx.channel().equals(leaderNode.getChannel())) {
+            nodeList.remove(leaderNode.getId());
+            Channel channel = leaderElectionHandler.ConnectToNext();
+            // start a new round leader election
+            LeaderElectionProtocol leaderElectionRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.SERVER_REQUEST);
+            channel.writeAndFlush(leaderElectionRequest);
+        }
     }
 
     /**
@@ -67,5 +91,13 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
+    }
+
+    public static NodeChannel getLeaderNode() {
+        return leaderNode;
+    }
+
+    public static void setLeaderNode(NodeChannel leaderNode) {
+        ServerTaskDispatcher.leaderNode = leaderNode;
     }
 }

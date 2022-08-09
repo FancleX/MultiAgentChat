@@ -23,6 +23,6 @@ public class ClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        new ClientDriver(port);
+        ClientDriver.start(port);
     }
 }
