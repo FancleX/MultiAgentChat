@@ -5,26 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/LeaderElection/LeaderElectionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionProtocol.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/LeaderElectionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/tokenGenerator/TokenGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/driver/ClientDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/driver/ClientDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/entity/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/NodeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/NodeManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/node/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/node/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/node/NodeChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/node/NodeChannel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +44,7 @@
     </option>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2CrwNjZW4Pyam46zCbwRh25d27G" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -262,7 +243,7 @@
       <workItem from="1659891544483" duration="19253000" />
       <workItem from="1659977516110" duration="16759000" />
       <workItem from="1660003806327" duration="668000" />
-      <workItem from="1660066666375" duration="16427000" />
+      <workItem from="1660066666375" duration="16546000" />
     </task>
     <servers />
   </component>
