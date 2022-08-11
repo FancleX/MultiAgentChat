@@ -1,14 +1,11 @@
 package com.neu.server.nodeManager.handler;
 
-import com.neu.liveNodeList.LiveNodeList;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
-import com.neu.p2pConnectionGroup.P2PConnectionGroup;
 import com.neu.protocol.GeneralType;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionType;
-import com.neu.server.nodeManager.NodeManager;
-import com.neu.server.nodeManager.dispatcher.ServerTaskDispatcher;
+import com.neu.server.sharableResource.SharableResource;
 import com.neu.server.tokenGenerator.TokenGenerator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,11 +18,7 @@ import java.util.Map;
 @Slf4j
 public class LeaderElectionHandler {
 
-    private final LiveNodeList<Node> nodeList;
-
-    public LeaderElectionHandler(LiveNodeList<Node> nodeList) {
-        this.nodeList = nodeList;
-    }
+    public LeaderElectionHandler() {}
 
     public void handle(LeaderElectionProtocol leaderElectionProtocol, ChannelHandlerContext ctx) {
         switch (leaderElectionProtocol.getSubType()) {
@@ -46,11 +39,11 @@ public class LeaderElectionHandler {
                 String hostname = (String) verify.get("hostname");
                 int port = (int) verify.get("port");
                 // get the leader node
-                Node leaderNode = nodeList.getLeaderNode();
+                NodeChannel leaderNode = SharableResource.leaderNode;
                 if (leaderNode.getId().equals(id) && leaderNode.getHostname().equals(hostname) && leaderNode.getPort() == port) {
                     // verify correctly, remove the current leader node
-                    nodeList.remove(leaderNode.getId());
-                    ServerTaskDispatcher.setLeaderNode(null);
+                    SharableResource.liveNodeList.remove(leaderNode.getId());
+                    SharableResource.leaderNode = null;
                     ctx.channel().close();
                 }
                 log.info("Leader node: " + leaderNode + " exited");
@@ -61,19 +54,19 @@ public class LeaderElectionHandler {
                 newLeader.setLeader(true);
                 log.info("A new leader reported: " + newLeader);
                 // add to the list
-                nodeList.add(newLeader);
+                SharableResource.liveNodeList.add(newLeader);
                 // generate a token for the node
                 String token = TokenGenerator.generateToken(newLeader.getId(), newLeader.getHostname(), newLeader.getPort());
                 // connect to the new leader node
                 Channel leaderChannel = null;
                 try {
-                    leaderChannel = NodeManager.getP2PConnectionGroup().connect(newLeader.getHostname(), newLeader.getPort());
+                    leaderChannel = SharableResource.group.connect(newLeader.getHostname(), newLeader.getPort());
                 } catch (SocketTimeoutException e) {
                     log.error("Failed to connect to the new leader node: " + newLeader);
                     log.warn("Retry to connect to the new leader node: " + newLeader);
                     // retry once
                     try {
-                        leaderChannel = NodeManager.getP2PConnectionGroup().connect(newLeader.getHostname(), newLeader.getPort());
+                        leaderChannel = SharableResource.group.connect(newLeader.getHostname(), newLeader.getPort());
                     } catch (SocketTimeoutException ex) {
                         log.error("Failed to connect the new leader node: " + newLeader + " after retry");
                         // ask another node to start new round leader election
@@ -93,7 +86,7 @@ public class LeaderElectionHandler {
                 // send token to the new leader node
                 LeaderElectionProtocol newLeaderMessage = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.SERVER_AUTH, token);
                 leaderChannel.writeAndFlush(newLeaderMessage);
-                ServerTaskDispatcher.setLeaderNode(new NodeChannel(newLeader, leaderChannel));
+                SharableResource.leaderNode = new NodeChannel(newLeader, leaderChannel);
                 log.info("Sent token to new leader node: " + newLeader + ", token: " + newLeaderMessage);
                 break;
         }
@@ -105,14 +98,14 @@ public class LeaderElectionHandler {
      * @return the io channel of the connected node, if run out of all tries or empty node list return null
      */
     public Channel ConnectToNext() {
-        if (nodeList.size() == 0) {
+        if (SharableResource.liveNodeList.size() == 0) {
             return null;
         }
-        Iterator<Node> allNodes = nodeList.getAllNodes();
+        Iterator<Node> allNodes = SharableResource.liveNodeList.getAllNodes();
         while (allNodes.hasNext()) {
             Node next = allNodes.next();
             try {
-                return NodeManager.getP2PConnectionGroup().connect(next.getHostname(), next.getPort());
+                return SharableResource.group.connect(next.getHostname(), next.getPort());
             } catch (SocketTimeoutException e) {
                 log.error("Failed to connect to node: " + next);
             }

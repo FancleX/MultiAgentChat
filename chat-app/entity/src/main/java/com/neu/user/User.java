@@ -33,6 +33,7 @@ public class User {
 
     private int port;
 
+    private boolean isLogin;
 
     public User(String nickname, String email, String password, String salt) {
         this.nickname = nickname;

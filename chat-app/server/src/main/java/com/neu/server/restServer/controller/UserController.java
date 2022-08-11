@@ -41,5 +41,14 @@ public class UserController {
         return userService.login(data);
     }
 
+    /**
+     * User for leader node notify the server which node has exited.
+     *
+     * @param userId the user id
+     */
+    @PostMapping("/logout")
+    public void logout(@RequestBody Long userId) {
+        userService.logout(userId);
+    }
 
 }

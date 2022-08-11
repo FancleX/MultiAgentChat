@@ -5,6 +5,7 @@ import com.neu.liveNodeList.LiveNodeList;
 import com.neu.node.Node;
 import com.neu.server.nodeManager.NodeManager;
 import com.neu.server.restServer.repository.UserRepository;
+import com.neu.server.sharableResource.SharableResource;
 import com.neu.server.tokenGenerator.TokenGenerator;
 import com.neu.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,21 +81,30 @@ public class UserService {
             return ResponseEntity.badRequest().body(response);
         }
 
+        // check if the user has already login somewhere
+        // abort the request
+        if (user.isLogin()) {
+            response.put("error", "Your account has logged in at somewhere");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         // record the ip and port of this time login
         // db
+        userRepository.updateLogin(user.getId(), true);
         userRepository.updateHostnameAndPort(id, hostname, port);
 
         // return the leader hostname and port of the p to p network
         // and the id the user
-        LiveNodeList<Node> nodeList = NodeManager.getNodeList();
+        LiveNodeList<Node> nodeList = SharableResource.liveNodeList;
         response.put("id", id);
+        response.put("nickname", user.getNickname());
         // if empty list, then the node will be assigned as leader
         if (nodeList.size() == 0) {
-            Node leaderNode = new Node(id, user.getNickname(), true, hostname, port);
-            nodeList.add(leaderNode);
-            // assign token to the node
-            String token = TokenGenerator.generateToken(leaderNode.getId(), leaderNode.getHostname(), leaderNode.getPort());
-            response.put("token", token);
+            // given the server hostname and port
+            try {
+                response.put("hostname", InetAddress.getLocalHost().getHostAddress());
+                response.put("port", SharableResource.myPort);
+            } catch (UnknownHostException ignored) {}
         } else {
             // return the leader hostname and port
             Node leaderNode = nodeList.getLeaderNode();
@@ -102,4 +114,7 @@ public class UserService {
         return ResponseEntity.ok(response);
     }
 
+    public void logout(Long userId) {
+        userRepository.updateLogin(userId, false);
+    }
 }

@@ -2,23 +2,16 @@ package com.neu.client.restClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neu.client.sharableResource.SharableResource;
 import com.sun.istack.NotNull;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class RestClient {
-
-    /**
-     * The url mapping of the rest api
-     */
-//    @Value("${request.uri}")
-    private String uri = "http://localhost:9000/user";
 
     private final RestTemplate restTemplate;
 
@@ -40,8 +33,7 @@ public class RestClient {
      */
     public String signup(@NotNull String nickname, @NotNull String email, @NotNull String password) throws HttpClientErrorException, HttpServerErrorException, ResourceAccessException {
         // request address
-        String url =  uri + "/signup";
-        System.out.println(url);
+        String url = SharableResource.baseURL + "/signup";
         // set header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -66,7 +58,7 @@ public class RestClient {
      * @param hostname the hostname -> get from localhost InetAddress.getLocalHost().getHostName()
      * @param port the port of the client start -> get from command line args when the Client application started
      * @return a map contains the id of the user and the hostname, port of the leader node of the p2p network
-     * map key values {"id": xxx, "hostname": "xxx", "port": xxx}
+     * map key values {"id": xxx, "nickname": xxx, "hostname": "xxx", "port": xxx}
      * @throws HttpClientErrorException thrown when the code is 4xx, usually caused by the email doesn't exist or password incorrect,
      * use getResponseBodyAsString() to get the error message from the server.
      * @throws HttpServerErrorException thrown when the code is 5xx, problem with server
@@ -74,7 +66,8 @@ public class RestClient {
      */
     public Map<String, Object> login(String email, String password, @NotNull String hostname, @NotNull int port) throws HttpClientErrorException, HttpServerErrorException, ResourceAccessException {
         // request address
-        String url = uri + "/login";
+        String url = SharableResource.baseURL + "/login";
+        System.out.println(url);
         // set header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -103,21 +96,4 @@ public class RestClient {
         } catch (JsonProcessingException ignored) {}
         return result;
     }
-
-//    public static void main(String[] args) {
-//        RestClient restClient = new RestClient();
-//        try {
-////            String res = restClient.signup("fancle", "12345@gmail.com", "123456");
-//            Map<String, Object> res = restClient.login("12@gmail.com", "123456", InetAddress.getLocalHost().getHostName(), 9003);
-//            System.out.println(res.get("port"));
-//        } catch (HttpClientErrorException e) {
-//            // http code other than 200
-//            System.out.println(e.getResponseBodyAsString());
-//        } catch (ResourceAccessException e) {
-//            System.out.println(e.getMessage());;
-//        } catch (UnknownHostException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
 }

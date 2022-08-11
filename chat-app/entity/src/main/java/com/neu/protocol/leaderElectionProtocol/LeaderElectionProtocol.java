@@ -5,10 +5,12 @@ import com.neu.protocol.GeneralType;
 import com.neu.protocol.TransmitProtocol;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Objects;
 
 @Data
+@ToString
 public class LeaderElectionProtocol extends TransmitProtocol {
 
     private LeaderElectionType subType;
@@ -40,6 +42,13 @@ public class LeaderElectionProtocol extends TransmitProtocol {
         super(type);
         this.subType = subType;
         this.nodeInfo = nodeInfo;
+    }
+
+    public LeaderElectionProtocol(GeneralType type, LeaderElectionType subType, Node nodeInfo, int performanceWeight) {
+        super(type);
+        this.subType = subType;
+        this.nodeInfo = nodeInfo;
+        this.performanceWeight = performanceWeight;
     }
 
     @Override

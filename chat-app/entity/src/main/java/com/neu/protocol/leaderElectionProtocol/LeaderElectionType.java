@@ -19,7 +19,7 @@ public enum LeaderElectionType {
 
     // client -> client
     // nodes report their status to the node that starts the election
-    // carry type + subtype + performanceWeight
+    // carry type + subtype + nodeInfo + performanceWeight
     NODE_REPORT,
 
     // client -> server

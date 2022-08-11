@@ -9,30 +9,19 @@ import com.neu.node.NodeChannel;
 import com.neu.p2pConnectionGroup.P2PConnectionGroup;
 import com.neu.protocol.TransmitProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @ChannelHandler.Sharable
-@Getter
-@Setter
 public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitProtocol> {
 
-
-    private P2PConnectionGroup group = ClientDriver.getGroup();
-
-    private final LiveNodeList<NodeChannel> liveNodeList;
 
     private final LeaderElectionHandler leaderElectionHandler;
 
 
-    public ClientTaskDispatcher(LiveNodeList<NodeChannel> liveNodeList) {
-        this.liveNodeList = new ClientLiveNodeListImpl<>();
-        this.leaderElectionHandler = new LeaderElectionHandler(liveNodeList, group);
+    public ClientTaskDispatcher() {
+        this.leaderElectionHandler = new LeaderElectionHandler();
     }
 
     @Override
