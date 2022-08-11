@@ -67,7 +67,6 @@ public class RestClient {
     public Map<String, Object> login(String email, String password, @NotNull String hostname, @NotNull int port) throws HttpClientErrorException, HttpServerErrorException, ResourceAccessException {
         // request address
         String url = SharableResource.baseURL + "/login";
-        System.out.println(url);
         // set header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -95,5 +94,14 @@ public class RestClient {
             throw new HttpClientErrorException(hcee.getStatusCode(), "", result.get("error").toString().getBytes(), StandardCharsets.UTF_8);
         } catch (JsonProcessingException ignored) {}
         return result;
+    }
+
+    /**
+     * Emergent method for user logout, if the node has been the leader node but the server p2p system is down and webservice doesn't crash.
+     *
+     * @param userId the user id
+     */
+    public void logout(Long userId) {
+        new RestTemplate().postForEntity(SharableResource.baseURL + "/logout", userId, Void.class);
     }
 }

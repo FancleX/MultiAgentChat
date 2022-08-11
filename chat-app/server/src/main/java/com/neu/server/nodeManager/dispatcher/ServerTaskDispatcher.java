@@ -68,8 +68,7 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
         // leader node may crash
         if (ctx.channel().equals(SharableResource.leaderNode.getChannel())) {
             // set the leader as logged out status
-            // TODO: to fix the 500 status error
-            new RestTemplate().postForEntity("http://localhost:" + SharableResource.myHttpPort + "/user/logout", SharableResource.leaderNode.getId(), Long.class);
+            new RestTemplate().postForEntity("http://localhost:" + SharableResource.myHttpPort + "/user/logout", SharableResource.leaderNode.getId(), Void.class);
             log.info("The last leader node logged out triggered by the system");
             SharableResource.liveNodeList.remove(SharableResource.leaderNode.getId());
 

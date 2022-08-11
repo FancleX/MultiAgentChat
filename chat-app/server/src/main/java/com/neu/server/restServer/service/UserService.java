@@ -114,6 +114,7 @@ public class UserService {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     public void logout(Long userId) {
         userRepository.updateLogin(userId, false);
     }

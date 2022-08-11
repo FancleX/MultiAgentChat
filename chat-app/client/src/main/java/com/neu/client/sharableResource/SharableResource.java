@@ -7,7 +7,6 @@ import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.p2pConnectionGroup.P2PConnectionGroup;
 import io.netty.channel.Channel;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Static resource shared with all system modules.
