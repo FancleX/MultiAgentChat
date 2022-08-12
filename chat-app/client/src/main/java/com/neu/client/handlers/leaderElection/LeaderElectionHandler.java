@@ -36,6 +36,7 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
         switch (leaderElectionProtocol.getSubType()) {
             case SERVER_REQUEST:
                 // start leader election and report the metadata of the leader node
+                SharableResource.server = ctx.channel();
                 LeaderElectionProtocol serverRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_REQUEST);
                 startLeaderElection(serverRequest);
                 break;
@@ -60,7 +61,7 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 // collect nodes report
                 nodeReportsCollector.put(leaderElectionProtocol.getNodeInfo(), leaderElectionProtocol.getPerformanceWeight());
                 // an asynchronously thread will handle the next, if the collect from all nodes
-                performanceAnalyzer(ctx);
+                performanceAnalyzer();
                 break;
         }
     }
@@ -79,25 +80,16 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
         }
     }
 
-    public void performanceAnalyzer(ChannelHandlerContext ctx) {
+    public void performanceAnalyzer() {
         executorService.scheduleAtFixedRate(() -> {
             if (nodeReportsCollector.size() == SharableResource.liveNodeList.size()) {
-                // analyze which node has the lowest the performance point
+                // analyze which node has the lowest performance point
                 Map.Entry<Node, Integer> theBestNode = getTheBestNode();
-                // send the node information to the server
-                // the node will become the leader node
+                // send the new leader node information to the server
                 LeaderElectionProtocol leader = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.CLIENT_REPORT, theBestNode.getKey());
                 SharableResource.server.writeAndFlush(leader);
-                // return the token if the node is the leader
                 // server will close the channel
-                if (SharableResource.myNode.isLeader()) {
-                    SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.TOKEN_RETURN, SharableResource.leaderNodeToken));
-                    SharableResource.myNode.setLeader(false);
-                    SharableResource.leaderNodeToken = null;
-                } else {
-                    // close the channel by the client
-                    ctx.channel().close();
-                }
+                SharableResource.server = null;
                 nodeReportsCollector.clear();
             }
         }, 0, 500, TimeUnit.MILLISECONDS);

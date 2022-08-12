@@ -2,6 +2,7 @@ package com.neu.node;
 
 import io.netty.channel.Channel;
 import lombok.Data;
+import lombok.ToString;
 
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  * Extra information storage should modify the field or extend the class.
  */
 @Data
+@ToString
 public class NodeChannel extends Node {
 
     // the io channel of the user

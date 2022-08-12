@@ -246,7 +246,7 @@ public class UI implements Runnable {
                     LeaderElectionProtocol leaderElectionProtocol = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.CLIENT_REPORT, SharableResource.myNode);
                     SharableResource.server.writeAndFlush(leaderElectionProtocol);
                     SharableResource.server.close();
-                    System.out.println(SharableResource.server);
+                    SharableResource.server = null;
                 } catch (SocketTimeoutException e) {
                     log.error("Failed to connect to server p2p service");
                     restClient.logout(id);
@@ -355,6 +355,12 @@ public class UI implements Runnable {
      */
     public void onExit() {
         try {
+            if (SharableResource.myNode != null && SharableResource.myNode.isLeader()) {
+                // TODO: start a leave transaction
+                SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.TOKEN_RETURN, SharableResource.myNode, SharableResource.leaderNodeToken));
+            } else {
+                // TODO: none leader node reports to the leader node to exit
+            }
             bufferedReader.close();
             log.info("System exited successfully");
             FormattedPrinter.printSystemMessage("See you soon!");

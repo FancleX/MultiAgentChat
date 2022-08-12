@@ -11,6 +11,7 @@ import com.neu.server.tokenGenerator.TokenGenerator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
@@ -46,17 +47,39 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                     // verify correctly, remove the current leader node
                     SharableResource.liveNodeList.remove(leaderNode.getId());
                     SharableResource.leaderNode = null;
+                    // logout the last leader node
+                    new RestTemplate().postForEntity("http://localhost:" + SharableResource.myHttpPort + "/user/logout", id, Void.class);
                     ctx.channel().close();
                 }
                 log.info("Leader node: " + leaderNode + " exited");
+                // start leader election after the leader node exited if the live node list is not empty
+                if (SharableResource.liveNodeList.size() == 0) {
+                    log.info("No nodes are in the p2p network");
+                    return;
+                }
+                Channel next = ConnectToNext();
+                next.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.SERVER_REQUEST));
                 break;
             case CLIENT_REPORT:
-                // get the new leader node
+                // get and update the new leader node
                 Node newLeader = leaderElectionProtocol.getNodeInfo();
-                newLeader.setLeader(true);
+                // set current leader to false if it has
+                if (SharableResource.liveNodeList.size() != 0) {
+                    Node oldLeader = SharableResource.liveNodeList.getLeaderNode();
+                    oldLeader.setLeader(false);
+
+                    Node node = SharableResource.liveNodeList.get(newLeader.getId());
+                    node.setLeader(true);
+                    newLeader = node;
+                } else {
+                    // if empty then add the node
+                    newLeader.setLeader(true);
+                    SharableResource.liveNodeList.add(newLeader);
+                }
+
                 log.info("A new leader reported: " + newLeader);
-                // add to the list
-                SharableResource.liveNodeList.add(newLeader);
+                // close the current connection
+                ctx.channel().close();
                 // generate a token for the node
                 String token = TokenGenerator.generateToken(newLeader.getId(), newLeader.getHostname(), newLeader.getPort());
                 // connect to the new leader node

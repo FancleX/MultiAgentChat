@@ -13,7 +13,7 @@ public enum LeaderElectionType {
     SERVER_AUTH,
 
     // client -> client
-    // the current leader node is going to leave the network and request to start the leader election process
+    // the current "leader" node requests to start the leader election process
     // carry type + subtype
     LEADER_REQUEST,
 
@@ -24,7 +24,7 @@ public enum LeaderElectionType {
 
     // client -> server
     // the leader node leaves the p2p group and returns the leader token
-    // carry type + subtype + leaderToken
+    // carry type + subtype + nodeInfo + leaderToken
     TOKEN_RETURN,
 
     // client -> server

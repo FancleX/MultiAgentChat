@@ -13,6 +13,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+
 /**
  * Dispatch incoming message and classify by the message type,
  * call different apis to handler the events.
@@ -37,7 +39,6 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TransmitProtocol msg) throws Exception {
-        System.out.println("msg");
         switch (msg.getType()) {
             case LEADER_ELECTION:
                 leaderElectionHandler.handle((LeaderElectionProtocol) msg, ctx);
@@ -66,13 +67,13 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // leader node may crash
-        if (ctx.channel().equals(SharableResource.leaderNode.getChannel())) {
+        if (SharableResource.leaderNode != null && ctx.channel().equals(SharableResource.leaderNode.getChannel())) {
             // set the leader as logged out status
             new RestTemplate().postForEntity("http://localhost:" + SharableResource.myHttpPort + "/user/logout", SharableResource.leaderNode.getId(), Void.class);
-            log.info("The last leader node logged out triggered by the system");
+            log.error("The last leader node logged out triggered by the system");
             SharableResource.liveNodeList.remove(SharableResource.leaderNode.getId());
 
-            log.info("Leader node lost the connection with server, a new round leader election will start");
+            log.warn("Leader node lost the connection with server, a new round leader election will start");
             if (SharableResource.liveNodeList.size() != 0) {
                 Channel channel = leaderElectionHandler.ConnectToNext();
                 // start a new round leader election
@@ -81,7 +82,10 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
                 channel.writeAndFlush(leaderElectionRequest);
             }
             log.info("No nodes are in the p2p network");
+        } else {
+            super.channelInactive(ctx);
         }
+
     }
 
     /**
@@ -93,6 +97,6 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error(cause.getMessage());
+        log.error(Arrays.toString(cause.getStackTrace()));
     }
 }

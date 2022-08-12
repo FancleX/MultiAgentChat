@@ -37,6 +37,13 @@ public class LeaderElectionProtocol extends TransmitProtocol {
         this.leaderToken = leaderToken;
     }
 
+    public LeaderElectionProtocol(GeneralType type, LeaderElectionType subType, Node nodeInfo, String leaderToken) {
+        super(type);
+        this.subType = subType;
+        this.nodeInfo = nodeInfo;
+        this.leaderToken = leaderToken;
+    }
+
     public LeaderElectionProtocol(GeneralType type, LeaderElectionType subType, Node nodeInfo) {
         super(type);
         this.subType = subType;
