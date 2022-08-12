@@ -1,5 +1,6 @@
 package com.neu.server.nodeManager.handler;
 
+import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
@@ -16,10 +17,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Slf4j
-public class LeaderElectionHandler {
+public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElectionProtocol> {
 
     public LeaderElectionHandler() {}
 
+    @Override
     public void handle(LeaderElectionProtocol leaderElectionProtocol, ChannelHandlerContext ctx) {
         switch (leaderElectionProtocol.getSubType()) {
             case TOKEN_RETURN:

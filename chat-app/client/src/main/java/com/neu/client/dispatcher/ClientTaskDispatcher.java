@@ -1,13 +1,11 @@
 package com.neu.client.dispatcher;
 
 
-import com.neu.client.driver.ClientDriver;
-import com.neu.client.handlers.LeaderElection.LeaderElectionHandler;
-import com.neu.liveNodeList.ClientLiveNodeListImpl;
-import com.neu.liveNodeList.LiveNodeList;
-import com.neu.node.NodeChannel;
-import com.neu.p2pConnectionGroup.P2PConnectionGroup;
+import com.neu.client.handlers.generalCommunication.GeneralCommunicationHandler;
+import com.neu.client.handlers.leaderElection.LeaderElectionHandler;
+import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.protocol.TransmitProtocol;
+import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,11 +15,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitProtocol> {
 
 
-    private final LeaderElectionHandler leaderElectionHandler;
+    private final GeneralEventHandlerAPI<LeaderElectionProtocol> leaderElectionHandler;
 
+    private final GeneralEventHandlerAPI<GeneralCommunicationProtocol> generalCommunicationHandler;
 
     public ClientTaskDispatcher() {
         this.leaderElectionHandler = new LeaderElectionHandler();
+        this.generalCommunicationHandler = new GeneralCommunicationHandler();
     }
 
     @Override
@@ -30,9 +30,11 @@ public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
         switch (msg.getType()) {
             // dispatch task by types
             case LEADER_ELECTION:
-                leaderElectionHandler.handler((LeaderElectionProtocol) msg, ctx);
+                leaderElectionHandler.handle((LeaderElectionProtocol) msg, ctx);
                 break;
-
+            case GENERAL_COMMUNICATION:
+                generalCommunicationHandler.handle((GeneralCommunicationProtocol) msg, ctx);
+                break;
         }
     }
 

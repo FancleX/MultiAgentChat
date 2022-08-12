@@ -1,6 +1,7 @@
-package com.neu.client.handlers.LeaderElection;
+package com.neu.client.handlers.leaderElection;
 
 import com.neu.client.sharableResource.SharableResource;
+import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class LeaderElectionHandler {
+public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElectionProtocol> {
 
 
     private final Map<Node, Integer> nodeReportsCollector;
@@ -30,10 +31,11 @@ public class LeaderElectionHandler {
         this.nodeReportsCollector = new HashMap<>();
     }
 
-    public void handler(LeaderElectionProtocol leaderElectionProtocol, ChannelHandlerContext ctx) {
+    @Override
+    public void handle(LeaderElectionProtocol leaderElectionProtocol, ChannelHandlerContext ctx) {
         switch (leaderElectionProtocol.getSubType()) {
             case SERVER_REQUEST:
-                // TODO: start leader election and report the metadata of the leader node
+                // start leader election and report the metadata of the leader node
                 LeaderElectionProtocol serverRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_REQUEST);
                 startLeaderElection(serverRequest);
                 break;

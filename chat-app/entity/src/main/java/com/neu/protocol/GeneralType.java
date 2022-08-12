@@ -5,6 +5,11 @@ package com.neu.protocol;
  */
 public enum GeneralType {
 
-    LEADER_ELECTION
+    // the top type of leader election
+    LEADER_ELECTION,
+
+    // the top type of general message communication
+    GENERAL_COMMUNICATION
+
 
 }

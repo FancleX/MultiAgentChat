@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The main protocol that will be transmitted over network.
@@ -22,5 +23,18 @@ public class TransmitProtocol implements Serializable {
 
     public TransmitProtocol(GeneralType type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransmitProtocol)) return false;
+        TransmitProtocol that = (TransmitProtocol) o;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

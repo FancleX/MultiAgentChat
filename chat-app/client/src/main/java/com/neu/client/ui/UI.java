@@ -4,9 +4,12 @@ import com.neu.client.communication.CommunicationAPI;
 import com.neu.client.communication.CommunicationAPIImpl;
 import com.neu.client.restClient.RestClient;
 import com.neu.client.sharableResource.SharableResource;
+import com.neu.formattedPrinter.FormattedPrinter;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
+import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationProtocol;
+import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationType;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionType;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +50,8 @@ public class UI implements Runnable {
 
 
     public void userInterface() throws IOException {
-        uiHelper.printTitle("Welcome to P2P multi agent chat application");
+        FormattedPrinter.printTitle("Welcome to P2P multi agent chat application");
         leve1MenuEventHandler();
-
     }
 
 
@@ -58,12 +60,12 @@ public class UI implements Runnable {
      * The level 1 menu should take care of guidelines for user signup and login.
      */
     public void level1Menu() {
-        uiHelper.printTitle("Signup / Login");
-        uiHelper.printSystemMessage("Please choose a command number to continue");
-        uiHelper.printSystemMessage("<1> signup");
-        uiHelper.printSystemMessage("<2> login");
-        uiHelper.printSystemMessage("<3> exit");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printTitle("Signup / Login");
+        FormattedPrinter.printSystemMessage("Please choose a command number to continue");
+        FormattedPrinter.printSystemMessage("<1> signup");
+        FormattedPrinter.printSystemMessage("<2> login");
+        FormattedPrinter.printSystemMessage("<3> exit");
+        FormattedPrinter.printEnd();
     }
 
     public void leve1MenuEventHandler() throws IOException {
@@ -75,63 +77,128 @@ public class UI implements Runnable {
             // signup
             case 1:
                 signupHandler();
-                uiHelper.printEnd();
+                FormattedPrinter.printEnd();
                 // signup successfully call login
                 loginHandler();
-                uiHelper.printEnd();
+                FormattedPrinter.printEnd();
                 break;
             // login
             case 2:
                 loginHandler();
-                uiHelper.printEnd();
+                FormattedPrinter.printEnd();
+                // login successfully go to level 2 menu
+                level2MenuEventHandler();
                 break;
             // exit
             case 3:
                 onExit();
                 break;
         }
-        uiHelper.printEnd();
+        FormattedPrinter.printEnd();
     }
 
     public void level2Menu() {
+        FormattedPrinter.printTitle("Function Navigation");
+        FormattedPrinter.printSystemMessage("Please choose a command number to continue");
+        FormattedPrinter.printSystemMessage("<1> show online users");
+        FormattedPrinter.printSystemMessage("<2> send message");
+        FormattedPrinter.printSystemMessage("<3> broadcast message");
+        FormattedPrinter.printSystemMessage("<4> exit");
+        FormattedPrinter.printEnd();
+    }
 
+    public void level2MenuEventHandler() throws IOException  {
+        while (true) {
+            // print menu
+            level2Menu();
+            // get user input
+            int rightInput = getRightInput(1, 4);
+            switch (rightInput) {
+                // show online users
+                case 1:
+                    displayOnlineUsers();
+                    break;
+                // send message
+                case 2:
+                    // send message handler
+                    messageSender();
+                    FormattedPrinter.printLineBreaker();
+                    break;
+                // broadcast message
+                case 3:
+                    // broadcast handler
+                    messageBroadcaster();
+                    FormattedPrinter.printLineBreaker();
+                    break;
+                // exit
+                case 4:
+                    onExit();
+                    break;
+            }
+            FormattedPrinter.printEnd();
+        }
+    }
+
+    public void messageSender() throws IOException {
+        FormattedPrinter.printSystemMessage("Please input a user id (in [] of the online user list) or input 0 to display online users");
+        // get input
+        int input = getRightInput(0, SharableResource.liveNodeList.size());
+        if (input == 0) {
+            displayOnlineUsers();
+        } else {
+            // get message
+            String message = getRightInput(2, "your message");
+            // construct general message
+            GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.PRIVATE_MESSAGE, message);
+            writer.send((long) input, generalCommunicationProtocol);
+            FormattedPrinter.printSystemMessage("Sent message: " + message + " to user: " + input);
+        }
+    }
+
+    public void messageBroadcaster() throws IOException {
+        FormattedPrinter.printSystemMessage("Note: your message is going to be seen by all online users");
+        String message = getRightInput(2, "your message");
+        // construct general message
+        GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.BROADCAST_MESSAGE, message);
+        writer.broadcast(generalCommunicationProtocol);
+        FormattedPrinter.printSystemMessage("Broadcast message: " + message + " to all users");
     }
 
 
     public void signupHandler() throws IOException {
-        uiHelper.printTitle("Signup");
+        FormattedPrinter.printTitle("Signup");
         // get email
         String email = getRightInput(0, "email");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printLineBreaker();
         // get password
         String password = getRightInput(1, "password");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printLineBreaker();
         // get nickname
         String nickname = getRightInput(2, "your nickname");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printLineBreaker();
         try {
             // call signup
             String response = restClient.signup(nickname, email, password);
-            uiHelper.printSystemMessage(response);
+            FormattedPrinter.printSystemMessage(response);
         } catch (HttpClientErrorException hcee) {
-            uiHelper.printSystemMessage(hcee.getResponseBodyAsString());
+            FormattedPrinter.printSystemMessage(hcee.getResponseBodyAsString());
             // recall the method to restart
             signupHandler();
         } catch (HttpServerErrorException | ResourceAccessException e) {
             log.error("Network or server traffic");
-            uiHelper.printSystemMessage("Server is unreachable now, please use the application later");
+            FormattedPrinter.printSystemMessage("Server is unreachable now, please use the application later");
             onExit();
         }
     }
 
     public void loginHandler() throws IOException {
-        uiHelper.printTitle("Login");
+        FormattedPrinter.printTitle("Login");
         // get email
         String email = getRightInput(0, "email");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printLineBreaker();
         // get password
         String password = getRightInput(1, "password");
-        uiHelper.printLineBreaker();
+        FormattedPrinter.printLineBreaker();
         // hostname
         String myHostname = SharableResource.myHostname;
         // port
@@ -144,10 +211,10 @@ public class UI implements Runnable {
             String nickname = (String) login.get("nickname");
             String hostname = (String) login.get("hostname");
             int port = (int) login.get("port");
-            uiHelper.printSystemMessage("Welcome back " + nickname);
+            FormattedPrinter.printSystemMessage("Welcome back " + nickname);
             // construct my node info
             SharableResource.myNode = new Node(id, nickname, false, SharableResource.myHostname, SharableResource.myPort);
-            uiHelper.printSystemMessage("Connecting to the p2p network ...");
+            FormattedPrinter.printSystemMessage("Connecting to the p2p network ...");
             // check if the node is the leader node
             if (hostname.equals(SharableResource.serverHostname) && port == SharableResource.serverPort) {
                 log.info("The node has become the leader node");
@@ -161,7 +228,7 @@ public class UI implements Runnable {
                 } catch (SocketTimeoutException e) {
                     log.error("Failed to connect to server p2p service");
                     restClient.logout(id);
-                    uiHelper.printSystemMessage("Server service is current unavailable, please try later");
+                    FormattedPrinter.printSystemMessage("Server service is current unavailable, please try later");
                     onExit();
                 }
             } else {
@@ -170,12 +237,12 @@ public class UI implements Runnable {
 
 
         } catch (HttpClientErrorException hcee) {
-            uiHelper.printSystemMessage(hcee.getResponseBodyAsString());
+            FormattedPrinter.printSystemMessage(hcee.getResponseBodyAsString());
             // recall the method to restart
             loginHandler();
         } catch (HttpServerErrorException | ResourceAccessException e) {
             log.error("Network or server traffic");
-            uiHelper.printSystemMessage("Server is unreachable now, please use the application later");
+            FormattedPrinter.printSystemMessage("Server is unreachable now, please use the application later");
             onExit();
         }
 
@@ -193,30 +260,30 @@ public class UI implements Runnable {
         switch (status) {
             case 0:
                 while (true) {
-                    uiHelper.printSystemMessage("Please input your " + guidelines + ": ");
+                    FormattedPrinter.printSystemMessage("Please input your " + guidelines + ": ");
                     String email = bufferedReader.readLine();
                     if (uiHelper.checkEmail(email)) {
                         return email;
                     }
-                    uiHelper.printSystemMessage("Invalid format of " + guidelines + ", please check and input again");
+                    FormattedPrinter.printSystemMessage("Invalid format of " + guidelines + ", please check and input again");
                 }
             case 1:
                 while (true) {
-                    uiHelper.printSystemMessage("Please input your " + guidelines + ": ");
+                    FormattedPrinter.printSystemMessage("Please input your " + guidelines + ": ");
                     String password = bufferedReader.readLine();
                     if (uiHelper.checkPassword(password)) {
                         return password;
                     }
-                    uiHelper.printSystemMessage("Invalid format of " + guidelines + ", please check and input again");
+                    FormattedPrinter.printSystemMessage("Invalid format of " + guidelines + ", please check and input again");
                 }
             case 2:
                 while (true) {
-                    uiHelper.printSystemMessage("Please input "  + guidelines + ": ");
+                    FormattedPrinter.printSystemMessage("Please input "  + guidelines + ": ");
                     String input = bufferedReader.readLine();
                     if (uiHelper.checkInputString(input)) {
                         return input;
                     }
-                    uiHelper.printSystemMessage("Invalid format of "  + guidelines + ", please check and input again");
+                    FormattedPrinter.printSystemMessage("Invalid format of "  + guidelines + ", please check and input again");
                 }
             default:
                 return null;
@@ -239,7 +306,7 @@ public class UI implements Runnable {
             if (uiHelper.integerInputChecker(input, lowerBound, upperBound)) {
                 return Integer.parseInt(input);
             } else {
-                uiHelper.printSystemMessage("Invalid input, please try again");
+                FormattedPrinter.printSystemMessage("Invalid input, please try again");
             }
         }
     }
@@ -248,59 +315,28 @@ public class UI implements Runnable {
      * Display all online users.
      */
     public void displayOnlineUsers() {
-        uiHelper.printTitle("Current Online Users");
-        Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
-        while (allNodes.hasNext()) {
-            NodeChannel next = allNodes.next();
-            System.out.println("[" + next.getId() + "] " + next.getNickname());
-        }
-        uiHelper.printEnd();
-    }
-
-    public static void main(String[] args) {
-        UIHelper uiHelper1 = new UIHelper();
-        uiHelper1.printTitle("Current Online Users");
-        uiHelper1.printTitle("Login");
-    }
-
-
-    public void test() {
-        Map<String, Object> login = restClient.login("123@gmail.com", "123456", SharableResource.myHostname, SharableResource.myPort);
-        Long id = Long.valueOf((Integer) login.get("id"));
-        String nickname = (String) login.get("nickname");
-        System.out.println("My id: " + id);
-        System.out.println("My nickname: " + nickname);
-        // parse hostname and port
-        String hostname = (String) login.get("hostname");
-        int port = (int) login.get("port");
-        System.out.println("hostname: " + hostname);
-        System.out.println("port: " + port);
-
-
-
-        // if it is the sever info
-        if (hostname.equals(SharableResource.serverHostname) && port == SharableResource.serverPort) {
-            System.out.println("Current node is leader node");
-            SharableResource.myNode = new Node(id, nickname, true, SharableResource.myHostname, SharableResource.myPort);
-            try {
-                SharableResource.server = SharableResource.group.connect(hostname, port);
-                LeaderElectionProtocol leaderElectionProtocol = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.CLIENT_REPORT, SharableResource.myNode);
-                SharableResource.server.writeAndFlush(leaderElectionProtocol);
-                SharableResource.server.close();
-                System.out.println(SharableResource.server);
-            } catch (SocketTimeoutException e) {
-                throw new RuntimeException(e);
+        FormattedPrinter.printTitle("Current Online Users");
+        if (SharableResource.liveNodeList.size() == 0) {
+            FormattedPrinter.printSystemMessage("No online users found");
+        } else {
+            Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
+            while (allNodes.hasNext()) {
+                NodeChannel next = allNodes.next();
+                System.out.println("[" + next.getId() + "] " + next.getNickname());
             }
         }
-
+        FormattedPrinter.printEnd();
     }
 
     /**
      * For user exit the program, this should shut down the whole system.
      */
     public void onExit() {
-        log.info("System exited successfully");
-        uiHelper.printSystemMessage("System exited ...");
+        try {
+            bufferedReader.close();
+            log.info("System exited successfully");
+            FormattedPrinter.printSystemMessage("System exited ...");
+        } catch (IOException ignored) {}
         System.exit(0);
     }
 
@@ -309,7 +345,8 @@ public class UI implements Runnable {
         try {
             userInterface();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -317,7 +354,7 @@ public class UI implements Runnable {
 }
 
 /**
- * The helper class of ui to do some operations.
+ * The helper class of ui to do some validation operations.
  *
  */
 class UIHelper {
@@ -378,50 +415,6 @@ class UIHelper {
             return false;
         }
         return parseInt >= lowerBound && parseInt <= upperBound;
-    }
-
-    /**
-     * Print the title of a menu with a 50 length string, if the string is less than the length will be filled with "=".
-     *
-     * @param title the title to be printed
-     */
-    void printTitle(String title) {
-        // wrap the title by two spaces
-        String wrappedTitle = " " + title + " ";
-        int length = wrappedTitle.length();
-        String result;
-        if (length < 50) {
-            // filled the rest spots with "="
-            int restSpots = 50 - length;
-            int half = restSpots / 2;
-            result = "=".repeat(half) + wrappedTitle + "=".repeat(restSpots - half);
-        } else {
-            result = wrappedTitle;
-        }
-        System.out.println(result);
-    }
-
-    /**
-     * Print the end of the title.
-     */
-    void printEnd() {
-        System.out.println("=".repeat(50));
-    }
-
-    /**
-     * Print the line breaker.
-     */
-    void printLineBreaker() {
-        System.out.println("-".repeat(50));
-    }
-
-    /**
-     * Print client system message to user.
-     *
-     * @param msg message
-     */
-    void printSystemMessage(String msg) {
-        System.out.println("[System message]: " + msg);
     }
 
 }

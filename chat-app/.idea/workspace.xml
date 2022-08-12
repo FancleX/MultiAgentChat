@@ -5,16 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/preConnectionTest/PreConnectionTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/generalCommunication/GeneralCommunicationHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/generalCommunicationProtocol/GeneralCommunicationProtocol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/generalCommunicationProtocol/GeneralCommunicationType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/formattedPrinter/FormattedPrinter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/handlerAPI/GeneralEventHandlerAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/restClient/RestClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/restClient/RestClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/sharableResource/SharableResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/sharableResource/SharableResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/LeaderElection/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/TransmitProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionProtocol.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/LeaderElectionHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,15 +28,23 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="JUnit5 Test Class" />
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="13ee3d09-45c6-43ac-a8d6-98e62f16c3de" />
+        <option name="url" value="https://github.com/FancleX/MultiAgentChat.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
@@ -129,11 +141,11 @@
       </method>
     </configuration>
     <configuration name="LeaderElectionHandler" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.neu.client.handlers.LeaderElection.LeaderElectionHandler" />
+      <option name="MAIN_CLASS_NAME" value="com.neu.client.handlers.leaderElection.LeaderElectionHandler" />
       <module name="client" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.neu.client.handlers.LeaderElection.*" />
+          <option name="PATTERN" value="com.neu.client.handlers.leaderElection.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -264,7 +276,8 @@
       <workItem from="1660066666375" duration="17212000" />
       <workItem from="1660152169488" duration="21508000" />
       <workItem from="1660237241890" duration="16437000" />
-      <workItem from="1660258440265" duration="730000" />
+      <workItem from="1660258440265" duration="2289000" />
+      <workItem from="1660323917890" duration="7848000" />
     </task>
     <servers />
   </component>
