@@ -61,7 +61,7 @@ public class UI implements Runnable {
      */
     public void level1Menu() {
         FormattedPrinter.printTitle("Signup / Login");
-        FormattedPrinter.printSystemMessage("Please choose a command number to continue");
+        FormattedPrinter.printSystemMessage("Please choose a command number to continue: ");
         FormattedPrinter.printSystemMessage("<1> signup");
         FormattedPrinter.printSystemMessage("<2> login");
         FormattedPrinter.printSystemMessage("<3> exit");
@@ -99,7 +99,7 @@ public class UI implements Runnable {
 
     public void level2Menu() {
         FormattedPrinter.printTitle("Function Navigation");
-        FormattedPrinter.printSystemMessage("Please choose a command number to continue");
+        FormattedPrinter.printSystemMessage("Please choose a command number to continue: ");
         FormattedPrinter.printSystemMessage("<1> show online users");
         FormattedPrinter.printSystemMessage("<2> send message");
         FormattedPrinter.printSystemMessage("<3> broadcast message");
@@ -140,28 +140,50 @@ public class UI implements Runnable {
     }
 
     public void messageSender() throws IOException {
-        FormattedPrinter.printSystemMessage("Please input a user id (in [] of the online user list) or input 0 to display online users");
+        FormattedPrinter.printSystemMessage("Please input a user <id> (in [] of the online user list),");
+        FormattedPrinter.printSystemMessage("input <-1> to back to navigation,");
+        FormattedPrinter.printSystemMessage("input <0> to display online users:");
+        if (SharableResource.liveNodeList.size() == 0) {
+            FormattedPrinter.printSystemMessage("No online users found, please try later");
+            return;
+        }
         // get input
-        int input = getRightInput(0, SharableResource.liveNodeList.size());
+        int input = getRightInput(-1, SharableResource.liveNodeList.size());
+        if (input == -1) {
+            return;
+        }
         if (input == 0) {
             displayOnlineUsers();
         } else {
             // get message
             String message = getRightInput(2, "your message");
             // construct general message
-            GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.PRIVATE_MESSAGE, message);
+            GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.PRIVATE_MESSAGE, SharableResource.myNode.getId(), (long) input, message);
             writer.send((long) input, generalCommunicationProtocol);
-            FormattedPrinter.printSystemMessage("Sent message: " + message + " to user: " + input);
+            // print sent log
+            FormattedPrinter.printSystemMessage(FormattedPrinter.formatter(false, (long) input, SharableResource.liveNodeList.get((long) input).getNickname(), message));
         }
     }
 
     public void messageBroadcaster() throws IOException {
-        FormattedPrinter.printSystemMessage("Note: your message is going to be seen by all online users");
+        FormattedPrinter.printSystemMessage("Note: your message is going to be seen by all online users, ");
+        FormattedPrinter.printSystemMessage("input <-1> to back to navigation,");
+        FormattedPrinter.printSystemMessage("input <0> to continue: ");
+        // get input
+        int input = getRightInput(-1, 0);
+        if (input == -1) {
+            return;
+        }
+        if (SharableResource.liveNodeList.size() == 0) {
+            FormattedPrinter.printSystemMessage("No online users found, please try later");
+            return;
+        }
         String message = getRightInput(2, "your message");
         // construct general message
-        GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.BROADCAST_MESSAGE, message);
+        GeneralCommunicationProtocol generalCommunicationProtocol = new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.BROADCAST_MESSAGE, SharableResource.myNode.getId(), message);
         writer.broadcast(generalCommunicationProtocol);
-        FormattedPrinter.printSystemMessage("Broadcast message: " + message + " to all users");
+        // print sent log
+        FormattedPrinter.printSystemMessage(FormattedPrinter.formatter(false, message));
     }
 
 
@@ -335,7 +357,7 @@ public class UI implements Runnable {
         try {
             bufferedReader.close();
             log.info("System exited successfully");
-            FormattedPrinter.printSystemMessage("System exited ...");
+            FormattedPrinter.printSystemMessage("See you soon!");
         } catch (IOException ignored) {}
         System.exit(0);
     }

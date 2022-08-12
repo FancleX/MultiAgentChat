@@ -11,7 +11,7 @@ public interface CommunicationAPI {
     /**
      * Send a message to the user with given id.
      *
-     * @param id the user id
+     * @param id  the receiver id
      * @param msg the message
      */
     void send(Long id, TransmitProtocol msg);

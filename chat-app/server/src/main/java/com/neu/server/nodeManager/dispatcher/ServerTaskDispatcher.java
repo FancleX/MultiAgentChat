@@ -1,6 +1,5 @@
 package com.neu.server.nodeManager.dispatcher;
 
-import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.protocol.GeneralType;
 import com.neu.protocol.TransmitProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
@@ -94,6 +93,6 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
+        log.error(cause.getMessage());
     }
 }

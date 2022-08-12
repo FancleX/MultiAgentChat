@@ -17,9 +17,18 @@ public class GeneralCommunicationProtocol extends TransmitProtocol {
     private Long receiver;
     private String messageContent;
 
-    public GeneralCommunicationProtocol(GeneralType type, GeneralCommunicationType subType, String messageContent) {
+    public GeneralCommunicationProtocol(GeneralType type, GeneralCommunicationType subType, Long sender, String messageContent) {
         super(type);
         this.subType = subType;
+        this.sender = sender;
+        this.messageContent = messageContent;
+    }
+
+    public GeneralCommunicationProtocol(GeneralType type, GeneralCommunicationType subType, Long sender, Long receiver, String messageContent) {
+        super(type);
+        this.subType = subType;
+        this.sender = sender;
+        this.receiver = receiver;
         this.messageContent = messageContent;
     }
 
