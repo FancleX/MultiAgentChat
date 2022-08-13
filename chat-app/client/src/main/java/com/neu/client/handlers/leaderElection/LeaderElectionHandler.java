@@ -83,6 +83,8 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
     public void performanceAnalyzer() {
         executorService.scheduleAtFixedRate(() -> {
             if (nodeReportsCollector.size() == SharableResource.liveNodeList.size()) {
+                // add self performance
+                nodeReportsCollector.put(SharableResource.myNode, getPerformance());
                 // analyze which node has the lowest performance point
                 Map.Entry<Node, Integer> theBestNode = getTheBestNode();
                 // send the new leader node information to the server
