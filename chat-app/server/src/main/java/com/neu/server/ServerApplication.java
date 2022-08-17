@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import java.net.InetAddress;
+
 
 @SpringBootApplication
 @EntityScan(basePackages = "com.neu.user")
@@ -30,6 +32,7 @@ public class ServerApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         SharableResource.myPort = port;
         SharableResource.myHttpPort = httpPort;
+        log.info("Localhost address: " + InetAddress.getLocalHost().getHostAddress());
         // test system port if they are available for the application to start
         boolean nettyPort = PreConnectionTest.testPortAvailable(this.port);
         if (!nettyPort) {

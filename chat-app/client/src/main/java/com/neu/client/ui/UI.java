@@ -2,6 +2,7 @@ package com.neu.client.ui;
 
 import com.neu.client.communication.CommunicationAPI;
 import com.neu.client.communication.CommunicationAPIImpl;
+import com.neu.client.handlers.joinAndLeave.JoinAndLeaveHandler;
 import com.neu.client.restClient.RestClient;
 import com.neu.client.sharableResource.SharableResource;
 import com.neu.formattedPrinter.FormattedPrinter;
@@ -41,6 +42,10 @@ public class UI implements Runnable {
 
     private final BufferedReader bufferedReader;
 
+    public static boolean isJoined;
+
+    public static boolean isLeft;
+
     public UI() {
         this.writer = new CommunicationAPIImpl();
         this.restClient = new RestClient();
@@ -53,8 +58,6 @@ public class UI implements Runnable {
         FormattedPrinter.printTitle("Welcome to P2P multi agent chat application");
         leve1MenuEventHandler();
     }
-
-
 
     /**
      * The level 1 menu should take care of guidelines for user signup and login.
@@ -148,8 +151,12 @@ public class UI implements Runnable {
             return;
         }
         // get input
-        int input = getRightInput(-1, SharableResource.liveNodeList.size());
+        int input = getRightInput(-1, Integer.MAX_VALUE);
         if (input == -1) {
+            return;
+        }
+        if (!SharableResource.liveNodeList.isContain((long) input)) {
+            FormattedPrinter.printSystemMessage("The user doesn't exit or not be online");
             return;
         }
         if (input == 0) {
@@ -254,10 +261,16 @@ public class UI implements Runnable {
                     onExit();
                 }
             } else {
-                // TODO: connect to the leader node and call join and leave api
+                // connect to the leader node and call join and leave api
+                JoinAndLeaveHandler.join(hostname, port);
+                while (!isJoined) {
+                    FormattedPrinter.printSystemMessage("Joining the p2p network ...");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {}
+                }
+                FormattedPrinter.printSystemMessage("You have joined the p2p network");
             }
-
-
         } catch (HttpClientErrorException hcee) {
             FormattedPrinter.printSystemMessage(hcee.getResponseBodyAsString());
             // recall the method to restart
@@ -356,10 +369,18 @@ public class UI implements Runnable {
     public void onExit() {
         try {
             if (SharableResource.myNode != null && SharableResource.myNode.isLeader()) {
-                // TODO: start a leave transaction
+                // start a leave transaction
+                JoinAndLeaveHandler.leave();
+                while (!isLeft) {
+                    FormattedPrinter.printSystemMessage("System is exiting ...");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {}
+                }
                 SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.TOKEN_RETURN, SharableResource.myNode, SharableResource.leaderNodeToken));
             } else {
-                // TODO: none leader node reports to the leader node to exit
+                // none leader node reports to the leader node to exit
+                JoinAndLeaveHandler.leave();
             }
             bufferedReader.close();
             log.info("System exited successfully");

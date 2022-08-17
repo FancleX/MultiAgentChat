@@ -30,6 +30,11 @@ public enum LeaderElectionType {
     // client -> server
     // the node report the result of the leader election
     // carry type + subtype + nodeInfo
-    CLIENT_REPORT
+    CLIENT_REPORT,
+
+    // client leader -> client
+    // leader announces the node is leader
+    // carry type + subtype + nodeInfo
+    LEADER_CHOSEN
 
 }

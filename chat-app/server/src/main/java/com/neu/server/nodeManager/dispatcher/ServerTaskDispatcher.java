@@ -1,9 +1,12 @@
 package com.neu.server.nodeManager.dispatcher;
 
+import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.protocol.GeneralType;
 import com.neu.protocol.TransmitProtocol;
+import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionType;
+import com.neu.server.nodeManager.handler.JoinAndLeaveHandler;
 import com.neu.server.nodeManager.handler.LeaderElectionHandler;
 import com.neu.server.sharableResource.SharableResource;
 import io.netty.channel.Channel;
@@ -25,8 +28,11 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
 
     private final LeaderElectionHandler leaderElectionHandler;
 
+    private final GeneralEventHandlerAPI<JoinAndLeaveProtocol> joinAndLeaveHandler;
+
     public ServerTaskDispatcher() {
         this.leaderElectionHandler = new LeaderElectionHandler();
+        this.joinAndLeaveHandler = new JoinAndLeaveHandler();
     }
 
     /**
@@ -42,6 +48,9 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
         switch (msg.getType()) {
             case LEADER_ELECTION:
                 leaderElectionHandler.handle((LeaderElectionProtocol) msg, ctx);
+                break;
+            case JOIN_AND_LEAVE:
+                joinAndLeaveHandler.handle((JoinAndLeaveProtocol) msg, ctx);
                 break;
         }
     }
@@ -80,8 +89,9 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
                 LeaderElectionProtocol leaderElectionRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.SERVER_REQUEST);
                 log.info("Sent request: " + leaderElectionRequest + " to a node");
                 channel.writeAndFlush(leaderElectionRequest);
+            } else {
+                log.info("No nodes are in the p2p network");
             }
-            log.info("No nodes are in the p2p network");
         } else {
             super.channelInactive(ctx);
         }

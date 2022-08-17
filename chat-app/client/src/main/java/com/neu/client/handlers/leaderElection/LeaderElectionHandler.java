@@ -1,5 +1,6 @@
 package com.neu.client.handlers.leaderElection;
 
+import com.neu.client.communication.CommunicationAPIImpl;
 import com.neu.client.sharableResource.SharableResource;
 import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.node.Node;
@@ -29,6 +30,8 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
 
     public LeaderElectionHandler() {
         this.nodeReportsCollector = new HashMap<>();
+        // an asynchronously thread will handle the next, if the collect from all nodes
+        this.performanceAnalyzer();
     }
 
     @Override
@@ -38,6 +41,13 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 // start leader election and report the metadata of the leader node
                 SharableResource.server = ctx.channel();
                 LeaderElectionProtocol serverRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_REQUEST);
+                log.info("Received request from server: " + serverRequest);
+                // if empty list send self
+                if (SharableResource.liveNodeList.size() == 0) {
+                    SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.CLIENT_REPORT, SharableResource.myNode));
+                    SharableResource.server = null;
+                    return;
+                }
                 startLeaderElection(serverRequest);
                 break;
             case SERVER_AUTH:
@@ -46,6 +56,8 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 SharableResource.myNode.setLeader(true);
                 SharableResource.leaderNodeToken = leaderToken;
                 SharableResource.server = ctx.channel();
+                // broadcast to all nodes
+                new CommunicationAPIImpl().broadcast(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_CHOSEN, SharableResource.myNode));
                 break;
             case LEADER_REQUEST:
                 // send request to all nodes
@@ -60,8 +72,11 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 log.info("Received " + leaderElectionProtocol.getSubType() + " from" + leaderElectionProtocol.getNodeInfo() + " with performance points " + leaderElectionProtocol.getPerformanceWeight());
                 // collect nodes report
                 nodeReportsCollector.put(leaderElectionProtocol.getNodeInfo(), leaderElectionProtocol.getPerformanceWeight());
-                // an asynchronously thread will handle the next, if the collect from all nodes
-                performanceAnalyzer();
+                break;
+            case LEADER_CHOSEN:
+                log.info("A leader reported: " + leaderElectionProtocol.getNodeInfo());
+                NodeChannel nodeChannel = SharableResource.liveNodeList.get(leaderElectionProtocol.getNodeInfo().getId());
+                nodeChannel.setLeader(true);
                 break;
         }
     }
@@ -77,12 +92,13 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
         while (allNodes.hasNext()) {
             NodeChannel next = allNodes.next();
             next.getChannel().writeAndFlush(request);
+            log.info("Sent request: " + request + " to node: " + next.getId());
         }
     }
 
     public void performanceAnalyzer() {
         executorService.scheduleAtFixedRate(() -> {
-            if (nodeReportsCollector.size() == SharableResource.liveNodeList.size()) {
+            if (nodeReportsCollector.size() == SharableResource.liveNodeList.size() && SharableResource.liveNodeList.size() != 0) {
                 // add self performance
                 nodeReportsCollector.put(SharableResource.myNode, getPerformance());
                 // analyze which node has the lowest performance point

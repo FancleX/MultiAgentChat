@@ -23,4 +23,12 @@ public interface CommunicationAPI {
      */
     void broadcast(TransmitProtocol msg);
 
+    /**
+     * Broadcast a message exclude the node with given id.
+     *
+     * @param msg the message to nodes
+     * @param id the id of excluded node
+     */
+    void broadcastExclude(TransmitProtocol msg, Long id);
+
 }
