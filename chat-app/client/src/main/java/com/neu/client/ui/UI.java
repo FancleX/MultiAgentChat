@@ -84,6 +84,8 @@ public class UI implements Runnable {
                 // signup successfully call login
                 loginHandler();
                 FormattedPrinter.printEnd();
+                // login successfully go to level 2 menu
+                level2MenuEventHandler();
                 break;
             // login
             case 2:

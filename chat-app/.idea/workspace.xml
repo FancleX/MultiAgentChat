@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="communication api done untested, ui done tested">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/client.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/server.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/JoinAndLeaveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/JoinAndLeaveHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,7 +276,7 @@
       <workItem from="1660409962469" duration="1864000" />
       <workItem from="1660669558795" duration="29383000" />
       <workItem from="1660755020993" duration="22450000" />
-      <workItem from="1660835755268" duration="20585000" />
+      <workItem from="1660835755268" duration="21162000" />
     </task>
     <task id="LOCAL-00001" summary="communication api done untested, ui done tested">
       <created>1660342756773</created>
