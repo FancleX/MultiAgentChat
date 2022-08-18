@@ -1,8 +1,0 @@
-# server rest api url
-base:
-  url: http://localhost:9000/user
-# server socket hostname and port
-netty:
-  server:
-    hostname: 192.168.56.1
-    port: 9001

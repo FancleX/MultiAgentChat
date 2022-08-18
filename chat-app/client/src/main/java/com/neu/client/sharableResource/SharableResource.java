@@ -18,7 +18,9 @@ public final class SharableResource {
 
     public static String serverHostname;
 
-    public static int serverPort;
+    public static int serverHTTPPort;
+
+    public static int serverNettyPort;
 
     /**
      * The url mapping of the rest api

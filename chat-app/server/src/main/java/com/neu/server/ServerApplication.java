@@ -18,14 +18,24 @@ import java.net.InetAddress;
 @Slf4j
 public class ServerApplication implements CommandLineRunner {
 
-    @Value("${netty.port}")
-    private int port;
+    private static int port;
 
     @Value("${server.port}")
     private int httpPort;
 
     public static void main(String[] args) {
-        SpringApplication.run(ServerApplication.class, args);
+        if (args.length == 1) {
+            try {
+                port = Integer.parseInt(args[0]);
+
+                SpringApplication.run(ServerApplication.class, args);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid format of ports");
+            }
+        } else {
+            System.out.println("Please specify <p2p port> to start the application");
+        }
+
     }
 
     @Override
@@ -34,7 +44,7 @@ public class ServerApplication implements CommandLineRunner {
         SharableResource.myHttpPort = httpPort;
         log.info("Localhost address: " + InetAddress.getLocalHost().getHostAddress());
         // test system port if they are available for the application to start
-        boolean nettyPort = PreConnectionTest.testPortAvailable(this.port);
+        boolean nettyPort = PreConnectionTest.testPortAvailable(port);
         if (!nettyPort) {
             log.error("Please try to use another ports to start the application");
             System.exit(1);

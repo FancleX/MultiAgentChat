@@ -8,8 +8,6 @@ import com.neu.client.ui.UI;
 import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
-import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationProtocol;
-import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationType;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveProtocol;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveType;
 import io.netty.channel.Channel;
@@ -73,7 +71,6 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
         }
     }
 
-
     @Override
     public void handle(JoinAndLeaveProtocol protocol, ChannelHandlerContext ctx) {
         // only leader node should take care of join and leave events of a node
@@ -83,7 +80,9 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                         if (SharableResource.liveNodeList.size() != 0) {
                             // enqueue the transaction
                             queue.add(protocol);
-                            ctx.channel().close();
+                            if (ctx != null) {
+                                ctx.channel().close();
+                            }
                         } else {
                             // if no nodes in the list, no transaction need
                             try {
@@ -107,10 +106,13 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                             // enqueue the transaction
                             queue.add(protocol);
                         } else {
-                            // send ack to the exit node
-                            JoinAndLeaveProtocol res = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE_OK);
-                            log.info("Sent LEAVE_OK to the exiting node: " + res);
-                            ctx.channel().writeAndFlush(res);
+                            // if the exit node not crash
+                            if (ctx != null) {
+                                // send ack to the exit node
+                                JoinAndLeaveProtocol res = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE_OK);
+                                log.info("Sent LEAVE_OK to the exiting node: " + res);
+                                ctx.channel().writeAndFlush(res);
+                            }
                             log.info("Broke connection with the node: " + protocol.getNodeInfo());
                             SharableResource.liveNodeList.remove(protocol.getNodeInfo().getId());
                             // report to server

@@ -4,13 +4,11 @@ import com.neu.client.handlers.joinAndLeave.JoinAndLeaveHandler;
 import com.neu.client.sharableResource.SharableResource;
 import com.neu.client.ui.UI;
 import com.neu.handlerAPI.GeneralEventHandlerAPI;
-import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveProtocol;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveType;
 import com.neu.protocol.transactionProtocol.TransactionProtocol;
-import com.neu.protocol.transactionProtocol.TransactionType;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -70,9 +68,6 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
                     log.info("Received ACCEPT response");
                     countAccept++;
                 }
-                log.info("count accept: " + countAccept);
-                log.info("node list size: " + SharableResource.liveNodeList.size());
-                log.info("Current node: " + currentNodeInTransaction);
                 break;
             case ABORT:
                 if (SharableResource.myNode.isLeader()) {

@@ -1,7 +1,5 @@
 server:
   port: 9000
-netty:
-  port: 9001
 
 spring:
   application:

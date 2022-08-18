@@ -16,7 +16,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 
 /**
  * Dispatch incoming message and classify by the message type,
@@ -107,6 +106,6 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error(Arrays.toString(cause.getStackTrace()));
+        log.error(cause.getMessage());
     }
 }

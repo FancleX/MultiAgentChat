@@ -245,7 +245,9 @@ public class UI implements Runnable {
             SharableResource.myNode = new Node(id, nickname, false, SharableResource.myHostname, SharableResource.myPort);
             FormattedPrinter.printSystemMessage("Connecting to the p2p network ...");
             // check if the node is the leader node
-            if (hostname.equals(SharableResource.serverHostname) && port == SharableResource.serverPort) {
+            System.out.println(hostname);
+            System.out.println(port);
+            if (hostname.equals(SharableResource.serverHostname) && port == SharableResource.serverNettyPort) {
                 log.info("The node has become the leader node");
                 SharableResource.myNode.setLeader(true);
                 try {
@@ -351,8 +353,9 @@ public class UI implements Runnable {
      */
     public void displayOnlineUsers() {
         FormattedPrinter.printTitle("Current Online Users");
+        System.out.println("[You] " + SharableResource.myNode.getNickname());
         if (SharableResource.liveNodeList.size() == 0) {
-            FormattedPrinter.printSystemMessage("No online users found");
+            FormattedPrinter.printSystemMessage("No other online users found");
         } else {
             Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
             while (allNodes.hasNext()) {
