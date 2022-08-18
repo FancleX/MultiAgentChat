@@ -7,16 +7,23 @@ import com.neu.client.handlers.leaderElection.LeaderElectionHandler;
 import com.neu.client.handlers.transaction.TransactionHandler;
 import com.neu.client.sharableResource.SharableResource;
 import com.neu.handlerAPI.GeneralEventHandlerAPI;
+import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.TransmitProtocol;
 import com.neu.protocol.generalCommunicationProtocol.GeneralCommunicationProtocol;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveProtocol;
 import com.neu.protocol.leaderElectionProtocol.LeaderElectionProtocol;
 import com.neu.protocol.transactionProtocol.TransactionProtocol;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -31,6 +38,8 @@ public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     private final GeneralEventHandlerAPI<JoinAndLeaveProtocol> joinAndLeaveHandler;
 
     private final GeneralEventHandlerAPI<TransactionProtocol> transactionEventHandler;
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public ClientTaskDispatcher() {
         this.leaderElectionHandler = new LeaderElectionHandler();
@@ -60,20 +69,58 @@ public class ClientTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        // if the leader node crash
-        // the leader node doesn't exit by transaction
-        NodeChannel leaderNode = SharableResource.liveNodeList.getLeaderNode();
-        if (SharableResource.liveNodeList.size() != 0 && leaderNode != null) {
-            if (ctx.channel().equals(leaderNode.getChannel())) {
-                log.info("Detected leader node crash, crash will be handled by server");
-                SharableResource.liveNodeList.remove(leaderNode.getId());
+        Node channel = getNodeByChannel(ctx.channel());
+        if (channel == null) {
+            log.info("Channel: " + ctx.channel() + " break the connection");
+            return;
+        }
+        executorService.submit(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ignored) {
+            }
+            if (TransactionHandler.currentNodeInTransaction == null) {
+                crashHandler(channel);
+            } else {
+                if (!TransactionHandler.currentNodeInTransaction.getNodeInfo().equals(channel)) {
+                    crashHandler(channel);
+                }
+            }
+        });
+
+    }
+
+    private void crashHandler(Node channel) {
+        if (SharableResource.liveNodeList.isContain(channel.getId())) {
+            if (channel.isLeader()) {
+                log.info("Detected leader node crash: " + channel);
+                SharableResource.liveNodeList.remove(channel.getId());
+            } else {
+                // if not the leader node
+                log.info("Detected a node crash id: " + channel.getId() + ", name: " + channel.getNickname());
+                if (SharableResource.myNode.isLeader()) {
+                    // report to server if my node is leader
+                    new RestTemplate().postForEntity("http://" + SharableResource.serverHostname + ":" + SharableResource.serverHTTPPort + "/user/logout", channel.getId(), Void.class);
+                    log.info("Reported to server");
+                }
+                SharableResource.liveNodeList.remove(channel.getId());
             }
         }
-        log.info("Channel: " + ctx.channel() + " break the connection");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error(cause.getMessage());
+    }
+
+    private Node getNodeByChannel(Channel channel) {
+        Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
+        while (allNodes.hasNext()) {
+            NodeChannel next = allNodes.next();
+            if (next.getChannel().equals(channel)) {
+                return next.getNode();
+            }
+        }
+        return null;
     }
 }

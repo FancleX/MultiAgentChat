@@ -5,29 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="communication api done untested, ui done tested">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ClientApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/joinAndLeave/JoinAndLeaveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/joinAndLeave/JoinAndLeaveHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/sharableResource/SharableResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/sharableResource/SharableResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/entity/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/client.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/server.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/util/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/JoinAndLeaveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/JoinAndLeaveHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +83,7 @@
     "WebServerToolWindowFactoryState": "false",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "extract.method.default.visibility": "private",
     "jdk.selected.JAVA_MODULE": "adopt-11",
     "last_opened_file_path": "C:/Users/fancl/Desktop/JavaProject/MultiAgentChat/chat-app",
     "nodejs_package_manager_path": "npm",
@@ -236,7 +224,7 @@
     <configuration name="ClientApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" singleton="false">
       <option name="ACTIVE_PROFILES" />
       <module name="client" />
-      <option name="PROGRAM_PARAMETERS" value="9002 localhost 9000 9001" />
+      <option name="PROGRAM_PARAMETERS" value="9005 localhost 9000 9001" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.neu.client.ClientApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -296,7 +284,7 @@
       <workItem from="1660409962469" duration="1864000" />
       <workItem from="1660669558795" duration="29383000" />
       <workItem from="1660755020993" duration="22450000" />
-      <workItem from="1660835755268" duration="12032000" />
+      <workItem from="1660835755268" duration="20585000" />
     </task>
     <task id="LOCAL-00001" summary="communication api done untested, ui done tested">
       <created>1660342756773</created>

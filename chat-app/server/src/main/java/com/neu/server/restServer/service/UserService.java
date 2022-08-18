@@ -1,13 +1,11 @@
 package com.neu.server.restServer.service;
 
 import com.neu.encryption.Encryption;
-import com.neu.liveNodeList.LiveNodeList;
 import com.neu.node.Node;
-import com.neu.server.nodeManager.NodeManager;
 import com.neu.server.restServer.repository.UserRepository;
 import com.neu.server.sharableResource.SharableResource;
-import com.neu.server.tokenGenerator.TokenGenerator;
 import com.neu.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +16,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -115,6 +114,10 @@ public class UserService {
 
     @Transactional
     public void logout(Long userId) {
+        if (SharableResource.liveNodeList.isContain(userId)) {
+            SharableResource.liveNodeList.remove(userId);
+            log.info("A node left id: " + userId);
+        }
         userRepository.updateLogin(userId, false);
     }
 }

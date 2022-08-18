@@ -21,7 +21,7 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                 break;
             case LEAVE:
                 SharableResource.liveNodeList.remove(protocol.getNodeInfo().getId());
-                log.info("A node left: " + protocol.getNodeInfo());
+                log.info("A node left id: " + protocol.getNodeInfo().getNode().getId());
                 // logout the node
                 new RestTemplate().postForEntity("http://localhost:" + SharableResource.myHttpPort + "/user/logout", protocol.getNodeInfo().getId(), Void.class);
                 break;

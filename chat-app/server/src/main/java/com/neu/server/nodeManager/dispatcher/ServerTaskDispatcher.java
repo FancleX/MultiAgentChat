@@ -55,18 +55,6 @@ public class ServerTaskDispatcher extends SimpleChannelInboundHandler<TransmitPr
     }
 
     /**
-     * A node connection established, should have further handlers to get the metadata of from the node,
-     * before add the node to the live node list.
-     *
-     * @param ctx the channel io of the node
-     * @throws Exception
-     */
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-    }
-
-    /**
      * A node broke or lost connection.
      *
      * @param ctx

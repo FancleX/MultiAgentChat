@@ -25,7 +25,6 @@ public class ClientApplication implements CommandLineRunner {
     private static int serverHTTPPort;
 
     private static int serverNettyPort;
-
     public static void main(String[] args) {
         // take port from args to start the client
         if (args.length == 4) {
