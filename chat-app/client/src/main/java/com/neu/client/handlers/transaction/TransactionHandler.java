@@ -2,6 +2,7 @@ package com.neu.client.handlers.transaction;
 
 import com.neu.client.handlers.joinAndLeave.JoinAndLeaveHandler;
 import com.neu.client.sharableResource.SharableResource;
+import com.neu.client.ui.UI;
 import com.neu.handlerAPI.GeneralEventHandlerAPI;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
@@ -24,12 +25,14 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
 
     private final TransactionAPI transactionAPI;
 
-    private TransactionProtocol currentNodeInTransaction;
+    public static TransactionProtocol currentNodeInTransaction;
 
     private int countAccept = 0;
     private int countAbort = 0;
     private int countACKCommit = 0;
     private int countACKDrop = 0;
+
+    private boolean isPhase1Completed;
 
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
@@ -43,8 +46,6 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
     public void handle(TransactionProtocol protocol, ChannelHandlerContext ctx) {
         switch (protocol.getSubType()) {
             case PREPARE:
-                currentNodeInTransaction = new TransactionProtocol(GeneralType.JOIN_AND_LEAVE, protocol.getMainType(), protocol.getNodeInfo());
-                log.info("Current node in transaction: " + currentNodeInTransaction);
                 switch (protocol.getMainType()) {
                     case JOIN:
                         boolean isContain = SharableResource.liveNodeList.isContain(protocol.getNodeInfo().getId());
@@ -66,13 +67,16 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
                 break;
             case ACCEPT:
                 if (SharableResource.myNode.isLeader()) {
-                    log.info("Received accept");
+                    log.info("Received ACCEPT response");
                     countAccept++;
                 }
+                log.info("count accept: " + countAccept);
+                log.info("node list size: " + SharableResource.liveNodeList.size());
+                log.info("Current node: " + currentNodeInTransaction);
                 break;
             case ABORT:
                 if (SharableResource.myNode.isLeader()) {
-                    log.info("Received abort");
+                    log.info("Received ABORT response");
                     countAbort++;
                 }
                 break;
@@ -80,13 +84,19 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
                 log.info("Committing the transaction");
                 if (JoinAndLeaveType.JOIN.equals(protocol.getMainType())) {
                     connectTo(protocol);
+                    // send ack
+                    transactionAPI.ackCommit(ctx.channel());
                 } else if (JoinAndLeaveType.LEAVE.equals(protocol.getMainType())) {
-                    log.info("Broke connection with the node: " + protocol.getNodeInfo());
+                    // send ack
+                    transactionAPI.ackCommit(ctx.channel());
                     SharableResource.liveNodeList.remove(protocol.getNodeInfo().getId());
+                    log.info("Broke connection with the node: " + protocol.getNodeInfo());
                 }
                 break;
             case DROP:
                 log.info("Drop the transaction");
+                // send ack
+                transactionAPI.ackDrop(ctx.channel());
                 // do nothing
                 break;
             case ACK_COMMIT:
@@ -113,65 +123,129 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
         countACKCommit = 0;
         countACKDrop = 0;
         currentNodeInTransaction = null;
+        isPhase1Completed = false;
         // tell the handler the transaction has done
-        JoinAndLeaveHandler.markCompleted();
+        JoinAndLeaveHandler.unlock();
     }
 
 
     private void phase1Analyzer() {
         executorService.scheduleAtFixedRate(() -> {
             // exclude the current node in transaction and self
-            while (countAccept + countAbort == SharableResource.liveNodeList.size() - 2) {
-                if (countAbort > 0) {
-                    // send drop
-                    transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
-                    resetPhase1Counter();
-                    break;
-                }
-                // check self
-                if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
-                    if (SharableResource.liveNodeList.isContain(currentNodeInTransaction.getNodeInfo().getId())) {
-                        // drop
-                        transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+            while (currentNodeInTransaction != null && !isPhase1Completed) {
+                if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
+                    // if self exit
+                    if (SharableResource.myNode.getId().equals(currentNodeInTransaction.getNodeInfo().getId())) {
+                        if (countAccept + countAbort == SharableResource.liveNodeList.size()) {
+                            phase1Processor();
+                        }
                     } else {
-                        // commit
-                        transactionAPI.commit(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                        if (countAccept + countAbort == SharableResource.liveNodeList.size() - 1) {
+                            phase1Processor();
+                        }
                     }
-                } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
-                    if (SharableResource.liveNodeList.isContain(currentNodeInTransaction.getNodeInfo().getId())) {
-                        // commit
-                        transactionAPI.commit(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
-                    } else {
-                        // drop
-                        transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
+                    if (countAccept + countAbort == SharableResource.liveNodeList.size()) {
+                        phase1Processor();
                     }
                 }
-                resetPhase1Counter();
             }
-        }, 300, 1000, TimeUnit.MILLISECONDS);
+        }, 300, 700, TimeUnit.MILLISECONDS);
     }
+
+    private void phase1Processor() {
+        log.info("Phase 1 completed");
+        if (countAbort > 0) {
+            // send drop
+            transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+            log.info("Abort message occurred in transaction, a DROP message sent");
+            resetPhase1Counter();
+            isPhase1Completed = true;
+            return;
+        }
+        // check self
+        if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
+            if (SharableResource.liveNodeList.isContain(currentNodeInTransaction.getNodeInfo().getId())) {
+                // drop
+                transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                log.info("Abort message occurred in transaction, a DROP message sent");
+            } else {
+                // commit
+                transactionAPI.commit(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                log.info("No Abort message occurred in transaction, a COMMIT message sent");
+            }
+        } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
+            // if self exit
+            if (SharableResource.myNode.getId().equals(currentNodeInTransaction.getNodeInfo().getId())) {
+                transactionAPI.commit(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                log.info("No Abort message occurred in transaction, a COMMIT message sent");
+            } else {
+                if (SharableResource.liveNodeList.isContain(currentNodeInTransaction.getNodeInfo().getId())) {
+                    // commit
+                    transactionAPI.commit(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                    log.info("No Abort message occurred in transaction, a COMMIT message sent");
+                } else {
+                    // drop
+                    transactionAPI.drop(currentNodeInTransaction.getNodeInfo(), currentNodeInTransaction.getMainType());
+                    log.info("Abort message occurred in transaction, a DROP message sent");
+                }
+            }
+        }
+        isPhase1Completed = true;
+        resetPhase1Counter();
+    }
+
+
 
     private void phase2Analyzer() {
         executorService.scheduleAtFixedRate(() -> {
             // exclude the current node in transaction and self
-            while (countACKCommit == SharableResource.liveNodeList.size() - 2 || countACKDrop == SharableResource.liveNodeList.size() - 2) {
-                // do action on self
-                if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
-                    connectTo(currentNodeInTransaction);
-                    // report to server
-                    SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.JOIN, currentNodeInTransaction.getNodeInfo()));
-                } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
-                    // check if not self
-                    if (!currentNodeInTransaction.getNodeInfo().getId().equals(SharableResource.myNode.getId())) {
-                        log.info("Broke connection with the node: " + currentNodeInTransaction.getNodeInfo());
-                        SharableResource.liveNodeList.remove(currentNodeInTransaction.getNodeInfo().getId());
-                        // report to server
-                        SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, currentNodeInTransaction.getNodeInfo()));
+            while (currentNodeInTransaction != null && isPhase1Completed) {
+                if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
+                    // if self exit
+                    if (SharableResource.myNode.getId().equals(currentNodeInTransaction.getNodeInfo().getId())) {
+                        if ((countACKCommit == SharableResource.liveNodeList.size() || countACKDrop == SharableResource.liveNodeList.size())) {
+                            phase2Processor();
+                        }
+                    } else {
+                        if ((countACKCommit == SharableResource.liveNodeList.size() - 1 || countACKDrop == SharableResource.liveNodeList.size() - 1)) {
+                            phase2Processor();
+                        }
+                    }
+                } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
+                    if ((countACKCommit == SharableResource.liveNodeList.size() || countACKDrop == SharableResource.liveNodeList.size())) {
+                        phase2Processor();
                     }
                 }
-                resetPhase2Counter();
             }
-        }, 300, 1000, TimeUnit.MILLISECONDS);
+        }, 300, 700, TimeUnit.MILLISECONDS);
+    }
+
+    private void phase2Processor() {
+        log.info("Phase 2 completed");
+        // do action on self
+        if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.JOIN)) {
+            connectTo(currentNodeInTransaction);
+            // report to server
+            SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.JOIN, currentNodeInTransaction.getNodeInfo()));
+        } else if (currentNodeInTransaction.getMainType().equals(JoinAndLeaveType.LEAVE)) {
+            // check if not self
+            if (!currentNodeInTransaction.getNodeInfo().getId().equals(SharableResource.myNode.getId())) {
+                // send ack to the exit node
+                JoinAndLeaveProtocol res = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE_OK);
+                log.info("Sent LEAVE_OK to the exiting node: " + res);
+                SharableResource.liveNodeList.get(currentNodeInTransaction.getNodeInfo().getId()).getChannel().writeAndFlush(res);
+                log.info("Broke connection with the node: " + currentNodeInTransaction.getNodeInfo());
+                SharableResource.liveNodeList.remove(currentNodeInTransaction.getNodeInfo().getId());
+                // report to server
+                SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, currentNodeInTransaction.getNodeInfo()));
+            } else {
+                resetPhase2Counter();
+                UI.isLeft = true;
+                return;
+            }
+        }
+        resetPhase2Counter();
     }
 
     private void connectTo(TransactionProtocol currentNodeInTransaction) {
@@ -182,6 +256,7 @@ public class TransactionHandler implements GeneralEventHandlerAPI<TransactionPro
             log.info("Established connection with a new node: " + currentNodeInTransaction.getNodeInfo());
             // send greeting message
             JoinAndLeaveProtocol greeting = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.GREETING, SharableResource.myNode);
+            log.info("Sent GREETING response for JOIN request of node: " + currentNodeInTransaction.getNodeInfo());
             connect.writeAndFlush(greeting);
         } catch (SocketTimeoutException ignored) {
             // the exception shouldn't be happened since the node that requested join and leave should keep connection with the leader node

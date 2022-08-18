@@ -5,26 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="communication api done untested, ui done tested">
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/joinAndLeave/JoinAndLeaveHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveProtocol.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/transactionProtocol/TransactionProtocol.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/transactionProtocol/TransactionType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/JoinAndLeaveHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/communication/CommunicationAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/communication/CommunicationAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/communication/CommunicationAPIImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/communication/CommunicationAPIImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/dispatcher/ClientTaskDispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/joinAndLeave/JoinAndLeaveHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/joinAndLeave/JoinAndLeaveHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/leaderElection/LeaderElectionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/handlers/transaction/TransactionImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/com/neu/client/ui/UI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/GeneralType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/leaderElectionProtocol/LeaderElectionType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/ServerApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/dispatcher/ServerTaskDispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveType.java" beforeDir="false" afterPath="$PROJECT_DIR$/entity/src/main/java/com/neu/protocol/joinAndLeaveProtocol/JoinAndLeaveType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/LeaderElectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/nodeManager/handler/LeaderElectionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/neu/server/restServer/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/ClientLiveNodeListImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/liveNodeList/ClientLiveNodeListImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +223,7 @@
     <configuration name="ClientApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" singleton="false">
       <option name="ACTIVE_PROFILES" />
       <module name="client" />
-      <option name="PROGRAM_PARAMETERS" value="9003" />
+      <option name="PROGRAM_PARAMETERS" value="9002" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.neu.client.ClientApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -285,7 +279,8 @@
       <workItem from="1660258440265" duration="2289000" />
       <workItem from="1660323917890" duration="21168000" />
       <workItem from="1660409962469" duration="1864000" />
-      <workItem from="1660669558795" duration="28248000" />
+      <workItem from="1660669558795" duration="29383000" />
+      <workItem from="1660755020993" duration="21527000" />
     </task>
     <task id="LOCAL-00001" summary="communication api done untested, ui done tested">
       <created>1660342756773</created>

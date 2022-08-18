@@ -14,6 +14,11 @@ public class JoinAndLeaveProtocol extends TransmitProtocol {
 
     private Node nodeInfo;
 
+    public JoinAndLeaveProtocol(GeneralType type, JoinAndLeaveType subType) {
+        super(type);
+        this.subType = subType;
+    }
+
     public JoinAndLeaveProtocol(GeneralType type, JoinAndLeaveType subType, Node nodeInfo) {
         super(type);
         this.subType = subType;

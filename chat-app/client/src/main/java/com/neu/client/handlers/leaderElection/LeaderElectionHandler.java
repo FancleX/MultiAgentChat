@@ -41,7 +41,7 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 // start leader election and report the metadata of the leader node
                 SharableResource.server = ctx.channel();
                 LeaderElectionProtocol serverRequest = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_REQUEST);
-                log.info("Received request from server: " + serverRequest);
+                log.info("Received LEADER_ELECTION request from server: " + serverRequest);
                 // if empty list send self
                 if (SharableResource.liveNodeList.size() == 0) {
                     SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.CLIENT_REPORT, SharableResource.myNode));
@@ -57,7 +57,15 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 SharableResource.leaderNodeToken = leaderToken;
                 SharableResource.server = ctx.channel();
                 // broadcast to all nodes
-                new CommunicationAPIImpl().broadcast(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_CHOSEN, SharableResource.myNode));
+                if (SharableResource.liveNodeList.size() != 0) {
+                    LeaderElectionProtocol leaderInfo = new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.LEADER_CHOSEN, SharableResource.myNode);
+                    Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
+                    while (allNodes.hasNext()) {
+                        NodeChannel next = allNodes.next();
+                        log.info("Sent LEADER_CHOSEN message to node: " + next.getId() + ": " + leaderInfo);
+                        next.getChannel().writeAndFlush(leaderInfo);
+                    }
+                }
                 break;
             case LEADER_REQUEST:
                 // send request to all nodes

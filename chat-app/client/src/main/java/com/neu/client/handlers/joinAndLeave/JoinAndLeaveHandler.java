@@ -32,6 +32,8 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
+    private static boolean lock = false;
+
     public JoinAndLeaveHandler() {
         this.scheduler();
     }
@@ -57,18 +59,20 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
             // send message to the leader node to report leave
             NodeChannel leaderNode = SharableResource.liveNodeList.getLeaderNode();
             JoinAndLeaveProtocol leave = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, SharableResource.myNode);
-            log.info("Sent leave request to the leader node: " + leave);
+            log.info("Sent LEAVE request to the leader node: " + leave);
             leaderNode.getChannel().writeAndFlush(leave);
             return;
         }
         // if the node is leader
-        // start transaction
-        queue.add(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, SharableResource.myNode));
+        // start transaction if list is not empty
+        if (SharableResource.liveNodeList.size() > 0) {
+            queue.add(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, SharableResource.myNode));
+        } else {
+            // else just exit
+            UI.isLeft = true;
+        }
     }
 
-    public static void markCompleted() {
-        executorService.notify();
-    }
 
     @Override
     public void handle(JoinAndLeaveProtocol protocol, ChannelHandlerContext ctx) {
@@ -86,7 +90,7 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                                 Channel connect = SharableResource.group.connect(protocol.getNodeInfo().getHostname(), protocol.getNodeInfo().getPort());
                                 SharableResource.liveNodeList.add(new NodeChannel(protocol.getNodeInfo(), connect));
                                 connect.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.GREETING, SharableResource.myNode));
-                                log.info("Sent GREETING response for join request of node: " + protocol.getNodeInfo());
+                                log.info("Sent GREETING response for JOIN request of node: " + protocol.getNodeInfo());
                                 // report to server
                                 SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.JOIN, protocol.getNodeInfo()));
                                 log.info("Sent REPORT to server for node: " + protocol.getNodeInfo());
@@ -96,8 +100,22 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                     break;
                 case LEAVE:
                     if (SharableResource.myNode.isLeader()) {
-                        // enqueue the transaction
-                        queue.add(protocol);
+                        // if current list contains at least one node that is not the node (transaction object)
+                        // then start a transaction
+                        // otherwise report to the server directly and remove the node
+                        if (SharableResource.liveNodeList.size() > 1) {
+                            // enqueue the transaction
+                            queue.add(protocol);
+                        } else {
+                            // send ack to the exit node
+                            JoinAndLeaveProtocol res = new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE_OK);
+                            log.info("Sent LEAVE_OK to the exiting node: " + res);
+                            ctx.channel().writeAndFlush(res);
+                            log.info("Broke connection with the node: " + protocol.getNodeInfo());
+                            SharableResource.liveNodeList.remove(protocol.getNodeInfo().getId());
+                            // report to server
+                            SharableResource.server.writeAndFlush(new JoinAndLeaveProtocol(GeneralType.JOIN_AND_LEAVE, JoinAndLeaveType.LEAVE, protocol.getNodeInfo()));
+                        }
                     }
                     break;
                 case GREETING:
@@ -108,14 +126,24 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                     // store the node to local live node list
                     SharableResource.liveNodeList.add(new NodeChannel(protocol.getNodeInfo(), ctx.channel()));
                     break;
+                case LEAVE_OK:
+                    log.info("Received LEAVE_OK, system exited");
+                    UI.isLeft = true;
+                    break;
             }
-
     }
+
+    public static void unlock() {
+        lock = false;
+        log.info("Transaction completed");
+    }
+
 
     private void scheduler() {
         executorService.scheduleAtFixedRate(() -> {
-            while (!queue.isEmpty()) {
+            while (!queue.isEmpty() && !lock) {
                 JoinAndLeaveProtocol head = queue.poll();
+                lock = true;
                 switch (head.getSubType()) {
                     case JOIN:
                         // start a transaction
@@ -128,12 +156,6 @@ public class JoinAndLeaveHandler implements GeneralEventHandlerAPI<JoinAndLeaveP
                         transactionAPI.prepare(head.getNodeInfo(), JoinAndLeaveType.LEAVE);
                         break;
                 }
-                try {
-                    synchronized (this) {
-                        log.info("Thread in waiting for the transaction complete");
-                        wait();
-                    }
-                } catch (InterruptedException ignored) {}
             }
         }, 300, 1000, TimeUnit.MILLISECONDS);
     }

@@ -65,12 +65,19 @@ public class LeaderElectionHandler implements GeneralEventHandlerAPI<LeaderElect
                 Node newLeader = leaderElectionProtocol.getNodeInfo();
                 // set current leader to false if it has
                 if (SharableResource.liveNodeList.size() != 0) {
-                    Node oldLeader = SharableResource.liveNodeList.getLeaderNode();
-                    oldLeader.setLeader(false);
+                    if (SharableResource.liveNodeList.getLeaderNode() != null) {
+                        Node oldLeader = SharableResource.liveNodeList.getLeaderNode();
+                        oldLeader.setLeader(false);
 
-                    Node node = SharableResource.liveNodeList.get(newLeader.getId());
-                    node.setLeader(true);
-                    newLeader = node;
+                        Node node = SharableResource.liveNodeList.get(newLeader.getId());
+                        node.setLeader(true);
+                        newLeader = node;
+                    } else {
+                        // query the current node list and set the node to leader
+                        Node node = SharableResource.liveNodeList.get(newLeader.getId());
+                        node.setLeader(true);
+                    }
+
                 } else {
                     // if empty then add the node
                     newLeader.setLeader(true);

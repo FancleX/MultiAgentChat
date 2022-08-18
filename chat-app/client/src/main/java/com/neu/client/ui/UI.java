@@ -379,8 +379,11 @@ public class UI implements Runnable {
                 }
                 SharableResource.server.writeAndFlush(new LeaderElectionProtocol(GeneralType.LEADER_ELECTION, LeaderElectionType.TOKEN_RETURN, SharableResource.myNode, SharableResource.leaderNodeToken));
             } else {
-                // none leader node reports to the leader node to exit
-                JoinAndLeaveHandler.leave();
+                if (SharableResource.myNode != null) {
+                    // none leader node reports to the leader node to exit
+                    // if the user logged in otherwise just exit
+                    JoinAndLeaveHandler.leave();
+                }
             }
             bufferedReader.close();
             log.info("System exited successfully");

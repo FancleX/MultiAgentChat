@@ -21,7 +21,6 @@ public class CommunicationAPIImpl implements CommunicationAPI {
         log.info("Sent message to id: " + id + ", message: " + msg);
         System.out.println(nodeChannel.getChannel());
         nodeChannel.getChannel().writeAndFlush(msg);
-        nodeChannel.getChannel().writeAndFlush(new GeneralCommunicationProtocol(GeneralType.GENERAL_COMMUNICATION, GeneralCommunicationType.PRIVATE_MESSAGE, 1L, "ABC"));
     }
 
     @Override
@@ -33,15 +32,15 @@ public class CommunicationAPIImpl implements CommunicationAPI {
         }
     }
 
-    @Override
-    public void broadcastExclude(TransmitProtocol msg, Long id) {
-        Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
-        while (allNodes.hasNext()) {
-            NodeChannel next = allNodes.next();
-            if (!next.getId().equals(id)) {
-                log.info("Message sent to " + next.getNode());
-                send(id, msg);
-            }
-        }
-    }
+//    @Override
+//    public void broadcastExclude(TransmitProtocol msg, Long id) {
+//        Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
+//        while (allNodes.hasNext()) {
+//            NodeChannel next = allNodes.next();
+//            if (!next.getId().equals(id)) {
+//                log.info("Message sent to " + next.getNode());
+//                send(id, msg);
+//            }
+//        }
+//    }
 }

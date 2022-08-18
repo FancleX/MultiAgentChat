@@ -21,7 +21,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public boolean add(T node) {
+    public synchronized boolean add(T node) {
         if (node == null) {
             return false;
         }
@@ -29,7 +29,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public boolean remove(Long id) {
+    public synchronized boolean remove(Long id) {
         if (id == null) {
             return false;
         }
@@ -47,7 +47,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public boolean isContain(Long id) {
+    public synchronized boolean isContain(Long id) {
         if (id == null) {
             return false;
         }
@@ -57,7 +57,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
 
 
     @Override
-    public T get(Long id) {
+    public synchronized T get(Long id) {
         if (id == null) {
             return null;
         }
@@ -66,7 +66,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public T getLeaderNode() {
+    public synchronized T getLeaderNode() {
         if (nodes.isEmpty()) {
             return null;
         }
@@ -75,17 +75,17 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public Iterator<T> getAllNodes() {
+    public synchronized Iterator<T> getAllNodes() {
         return iterator();
     }
 
     @Override
-    public int size() {
+    public synchronized int size() {
         return nodes.size();
     }
 
     @Override
-    public T getNext() {
+    public synchronized T getNext() {
         if (nodes.size() == 0) {
             return null;
         }
@@ -94,7 +94,7 @@ public class ClientLiveNodeListImpl<T extends NodeChannel> implements LiveNodeLi
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public synchronized Iterator<T> iterator() {
         return nodes.iterator();
     }
 }

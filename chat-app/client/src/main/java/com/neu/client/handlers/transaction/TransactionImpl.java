@@ -6,6 +6,7 @@ import com.neu.client.sharableResource.SharableResource;
 import com.neu.node.Node;
 import com.neu.node.NodeChannel;
 import com.neu.protocol.GeneralType;
+import com.neu.protocol.TransmitProtocol;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveProtocol;
 import com.neu.protocol.joinAndLeaveProtocol.JoinAndLeaveType;
 import com.neu.protocol.transactionProtocol.TransactionProtocol;
@@ -14,22 +15,20 @@ import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketTimeoutException;
+import java.util.Iterator;
 
 @Slf4j
 public class TransactionImpl implements TransactionAPI {
 
-    private final CommunicationAPI messageSender;
-
-    public TransactionImpl() {
-        this.messageSender = new CommunicationAPIImpl();
-    };
-
+    public TransactionImpl() {}
 
     @Override
     public void prepare(Node nodeInfo, JoinAndLeaveType type) {
         TransactionProtocol message = new TransactionProtocol(GeneralType.TRANSACTION, type, TransactionType.PREPARE, nodeInfo);
         log.info("Broadcast the transaction prepare message: " + message);
-        messageSender.broadcastExclude(message, nodeInfo.getId());
+        TransactionHandler.currentNodeInTransaction = new TransactionProtocol(GeneralType.JOIN_AND_LEAVE, type, nodeInfo);
+        log.info("Current node in transaction: " + TransactionHandler.currentNodeInTransaction);
+        broadcastExclude(message, nodeInfo.getId());
     }
 
     @Override
@@ -50,14 +49,14 @@ public class TransactionImpl implements TransactionAPI {
     public void commit(Node nodeInfo, JoinAndLeaveType type) {
         TransactionProtocol request = new TransactionProtocol(GeneralType.TRANSACTION, type, TransactionType.COMMIT, nodeInfo);
         log.info("Sent commit request to the transaction: " + request);
-        messageSender.broadcastExclude(request, nodeInfo.getId());
+        broadcastExclude(request, nodeInfo.getId());
     }
 
     @Override
     public void drop(Node nodeInfo, JoinAndLeaveType type) {
         TransactionProtocol request = new TransactionProtocol(GeneralType.TRANSACTION, type, TransactionType.DROP, nodeInfo);
         log.info("Sent drop request to the transaction: " + request);
-        messageSender.broadcastExclude(request, nodeInfo.getId());
+        broadcastExclude(request, nodeInfo.getId());
     }
 
     @Override
@@ -72,5 +71,23 @@ public class TransactionImpl implements TransactionAPI {
         TransactionProtocol res = new TransactionProtocol(GeneralType.TRANSACTION, TransactionType.ACK_DROP);
         log.info("Responded an ACK message to the transaction: " + res);
         channel.writeAndFlush(res);
+    }
+
+
+    /**
+     * Broadcast a message exclude the node with given id.
+     *
+     * @param msg the message to nodes
+     * @param id the id of excluded node
+     */
+    private void broadcastExclude(TransmitProtocol msg, Long id) {
+        Iterator<NodeChannel> allNodes = SharableResource.liveNodeList.getAllNodes();
+        while (allNodes.hasNext()) {
+            NodeChannel next = allNodes.next();
+            if (!next.getId().equals(id)) {
+                log.info("Sent to node [" + next.getNode().getId() + "] " + next.getNode().getNickname() + ": " + msg);
+                next.getChannel().writeAndFlush(msg);
+            }
+        }
     }
 }

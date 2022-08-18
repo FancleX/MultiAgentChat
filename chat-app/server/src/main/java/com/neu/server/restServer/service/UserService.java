@@ -95,11 +95,10 @@ public class UserService {
 
         // return the leader hostname and port of the p to p network
         // and the id the user
-        LiveNodeList<Node> nodeList = SharableResource.liveNodeList;
         response.put("id", id);
         response.put("nickname", user.getNickname());
         // if empty list, then the node will be assigned as leader
-        if (nodeList.size() == 0) {
+        if (SharableResource.liveNodeList.size() == 0) {
             // given the server hostname and port
             try {
                 response.put("hostname", InetAddress.getLocalHost().getHostAddress());
@@ -107,7 +106,7 @@ public class UserService {
             } catch (UnknownHostException ignored) {}
         } else {
             // return the leader hostname and port
-            Node leaderNode = nodeList.getLeaderNode();
+            Node leaderNode = SharableResource.liveNodeList.getLeaderNode();
             response.put("hostname", leaderNode.getHostname());
             response.put("port", leaderNode.getPort());
         }
