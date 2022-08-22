@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="communication api done untested, ui done tested">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/architecture.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/uml.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/src/main/java/com/neu/p2pConnectionGroup/nettyServer/NettyServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/com/neu/p2pConnectionGroup/nettyServer/NettyServer.java" afterDir="false" />
-    </list>
+    <list default="true" id="de5cdf64-1df2-49d4-99c5-a91c78767bc4" name="Changes" comment="communication api done untested, ui done tested" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -284,7 +275,7 @@
       <workItem from="1660669558795" duration="29383000" />
       <workItem from="1660755020993" duration="22450000" />
       <workItem from="1660835755268" duration="28345000" />
-      <workItem from="1661189103574" duration="1677000" />
+      <workItem from="1661189103574" duration="1839000" />
     </task>
     <task id="LOCAL-00001" summary="communication api done untested, ui done tested">
       <created>1660342756773</created>
