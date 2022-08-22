@@ -52,7 +52,8 @@ public class NettyServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
                             // add byte encoder and decoder
-                            pipeline.addLast(new ObjectDecoder(1024*1024, ClassResolvers.weakCachingConcurrentResolver(TransmitProtocol.class.getClassLoader())))
+                            pipeline.addLast(new ObjectDecoder(1024*1024,
+                                            ClassResolvers.weakCachingConcurrentResolver(TransmitProtocol.class.getClassLoader())))
                                     .addLast(new ObjectEncoder())
                                     // add task dispatcher
                                     .addLast(dispatcher);
