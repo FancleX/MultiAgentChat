@@ -69,7 +69,7 @@ Assumptions:
 * Netty -> construct the peer to peer connection
 * Spring boot & maven -> manage dependencies and package modules, application starter
 * Spring Web -> rest api and rest template are used for signup, login, and logout
-* Spring Data Jpa -> data access layer
+* Spring Data JPA -> data access layer
 
 ### Database:
 * Amazon RDS
